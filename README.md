@@ -8,7 +8,7 @@
 
 ---
 
-# 🧪 GemTD
+# 🏰 GemTD
 
 A tower defense game built with **ECS architecture** using the **Entitas** framework in Unity.  
 Developed as a team project to demonstrate modular design, performance, and clean separation of game logic.
