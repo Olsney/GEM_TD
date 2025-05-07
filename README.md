@@ -22,5 +22,3 @@ Developed as a team project to demonstrate modular design, performance, and clea
 ![image_2025-05-07_23-57-20](https://github.com/user-attachments/assets/15e752c9-8a09-4197-b227-26cd6bda03c6)
 
 ![image_2025-05-07_23-57-42](https://github.com/user-attachments/assets/566af5a1-96ff-4eed-ae59-4a97727b2521)
-
-![image_2025-05-07_23-56-11](https://github.com/user-attachments/assets/05a68ad2-bae6-4fd2-baaa-7a1892cbbb1e)
