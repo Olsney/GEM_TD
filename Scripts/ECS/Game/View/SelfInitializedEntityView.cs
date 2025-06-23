@@ -1,16 +1,12 @@
 ﻿using Game.Entity;
 using Services.Identifiers;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
-namespace Game.View
+namespace Game
 {
   public class SelfInitializedEntityView : MonoBehaviour
   {
-    [FormerlySerializedAs("GameGameEntityBinder")]
-    [FormerlySerializedAs("GameEntityBinder")]
-    [FormerlySerializedAs("EntityBinder")]
     public GameEntityView GameEntityView;
     private IIdentifierService _identifiers;
 

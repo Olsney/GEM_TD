@@ -1,4 +1,4 @@
-namespace Game.View.Registrars
+namespace Game.Registrars
 {
   public abstract class EntityComponentRegistrar : EntityDependant, IEntityComponentRegistrar
   {

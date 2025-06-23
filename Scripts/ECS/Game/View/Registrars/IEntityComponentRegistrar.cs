@@ -1,4 +1,4 @@
-namespace Game.View.Registrars
+namespace Game.Registrars
 {
   public interface IEntityComponentRegistrar
   {

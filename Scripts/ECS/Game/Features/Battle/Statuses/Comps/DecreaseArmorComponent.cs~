@@ -1,7 +1,0 @@
-﻿namespace Game.Features.Battle.Statuses
-{
-    public class DecreaseArmorComponent
-    {
-        
-    }
-}

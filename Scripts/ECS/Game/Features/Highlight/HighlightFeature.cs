@@ -2,12 +2,12 @@
 
 namespace Game.Highlight
 {
-  public sealed class HighlightFeature : Feature
-  { 
-    public HighlightFeature(ISystemFactory systems)
+    public sealed class HighlightFeature : Feature
     {
-      Add(systems.Create<HighlightSystem>());
-      Add(systems.Create<UnHighlightSystem>());
+        public HighlightFeature(ISystemFactory systems)
+        {
+            Add(systems.Create<HighlightSystem>());
+            Add(systems.Create<UnHighlightSystem>());
+        }
     }
-  }
 }

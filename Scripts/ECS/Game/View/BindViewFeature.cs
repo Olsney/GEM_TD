@@ -1,7 +1,7 @@
-using Game.View.Systems;
+using Game.Systems;
 using Services.SystemsFactoryServices;
 
-namespace Game.View
+namespace Game
 {
     public sealed class BindViewFeature : Feature
     {

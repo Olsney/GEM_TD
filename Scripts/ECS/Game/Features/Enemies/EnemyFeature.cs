@@ -13,6 +13,7 @@ namespace Game.Enemies
             Add(systems.Create<CountKilledEnemiesSystem>());
 
             Add(systems.Create<UpdateAgeSystem>());
+            Add(systems.Create<EnemyKilledReactiveSystem>());
             Add(systems.Create<FinalizeEnemyDeathProcessingSystem>());
         }
     }

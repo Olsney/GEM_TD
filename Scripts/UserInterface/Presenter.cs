@@ -1,6 +1,6 @@
 ﻿namespace UserInterface
 {
-    public class Presenter<T>
+    public abstract class Presenter<T> where T : View
     {
         protected T View { get; }
 
@@ -8,5 +8,9 @@
         {
             View = view;
         }
+
+        public void Show() => View.Show();
+
+        public virtual void Hide() => View.Hide();
     }
 }

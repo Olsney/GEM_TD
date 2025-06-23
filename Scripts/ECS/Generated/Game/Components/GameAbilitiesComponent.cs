@@ -34,10 +34,10 @@ public sealed partial class GameMatcher {
 public partial class GameEntity {
 
     public Game.Battle.AbilitiesComponent abilities { get { return (Game.Battle.AbilitiesComponent)GetComponent(GameComponentsLookup.Abilities); } }
-    public System.Collections.Generic.List<GameEntity> Abilities { get { return abilities.Value; } }
+    public System.Collections.Generic.List<int> Abilities { get { return abilities.Value; } }
     public bool hasAbilities { get { return HasComponent(GameComponentsLookup.Abilities); } }
 
-    public GameEntity AddAbilities(System.Collections.Generic.List<GameEntity> newValue) {
+    public GameEntity AddAbilities(System.Collections.Generic.List<int> newValue) {
         var index = GameComponentsLookup.Abilities;
         var component = (Game.Battle.AbilitiesComponent)CreateComponent(index, typeof(Game.Battle.AbilitiesComponent));
         component.Value = newValue;
@@ -45,7 +45,7 @@ public partial class GameEntity {
         return this;
     }
 
-    public GameEntity ReplaceAbilities(System.Collections.Generic.List<GameEntity> newValue) {
+    public GameEntity ReplaceAbilities(System.Collections.Generic.List<int> newValue) {
         var index = GameComponentsLookup.Abilities;
         var component = (Game.Battle.AbilitiesComponent)CreateComponent(index, typeof(Game.Battle.AbilitiesComponent));
         component.Value = newValue;

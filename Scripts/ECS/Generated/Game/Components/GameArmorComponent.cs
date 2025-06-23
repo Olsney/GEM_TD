@@ -6,9 +6,6 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
-using Game.Lifetime;
-
 public sealed partial class GameMatcher {
 
     static Entitas.IMatcher<GameEntity> _matcherArmor;
@@ -36,13 +33,13 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public ArmorComponent armor { get { return (ArmorComponent)GetComponent(GameComponentsLookup.Armor); } }
+    public Game.Lifetime.ArmorComponent armor { get { return (Game.Lifetime.ArmorComponent)GetComponent(GameComponentsLookup.Armor); } }
     public float Armor { get { return armor.Value; } }
     public bool hasArmor { get { return HasComponent(GameComponentsLookup.Armor); } }
 
     public GameEntity AddArmor(float newValue) {
         var index = GameComponentsLookup.Armor;
-        var component = (ArmorComponent)CreateComponent(index, typeof(ArmorComponent));
+        var component = (Game.Lifetime.ArmorComponent)CreateComponent(index, typeof(Game.Lifetime.ArmorComponent));
         component.Value = newValue;
         AddComponent(index, component);
         return this;
@@ -50,7 +47,7 @@ public partial class GameEntity {
 
     public GameEntity ReplaceArmor(float newValue) {
         var index = GameComponentsLookup.Armor;
-        var component = (ArmorComponent)CreateComponent(index, typeof(ArmorComponent));
+        var component = (Game.Lifetime.ArmorComponent)CreateComponent(index, typeof(Game.Lifetime.ArmorComponent));
         component.Value = newValue;
         ReplaceComponent(index, component);
         return this;

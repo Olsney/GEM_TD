@@ -20,7 +20,8 @@ namespace Game.Cameras
             _cameras = game.GetGroup(GameMatcher
                 .AllOf(
                     GameMatcher.CameraTarget,
-                    GameMatcher.CameraInput
+                    GameMatcher.CameraInput,
+                    GameMatcher.ZoomState
                 )
             );
         }
@@ -30,18 +31,32 @@ namespace Game.Cameras
             var zoomSpeed = _service.ProjectConfig.CameraConfig.ZoomSpeed;
             var minHeight = _service.ProjectConfig.CameraConfig.MinHeight;
             var maxHeight = _service.ProjectConfig.CameraConfig.MaxHeight;
+            var zoomDamping  = _service.ProjectConfig.CameraConfig.Damping;
 
             foreach (GameEntity camera in _cameras)
             {
                 var target = camera.CameraTarget;
                 var input = camera.CameraInput;
 
-                Vector3 position = target.position;
-                float targetYposition = position.y - input.zoom * zoomSpeed * _time.DeltaTime;
+                if (!camera.hasZoomState)
+                {
+                    camera.AddZoomState(target.position.y);
+                }
+                
+                float targetY = camera.zoomState.Value - input.zoom * zoomSpeed;
 
-                position.y = Mathf.Clamp(targetYposition, minHeight, maxHeight);
+                float clampedTargetY = Mathf.Clamp(targetY, minHeight, maxHeight);
+                camera.ReplaceZoomState(clampedTargetY);
 
-                target.position = position;
+                Vector3 currentPosition = target.position;
+                float newY = Mathf.Lerp(
+                    currentPosition.y,
+                    clampedTargetY, 
+                    zoomDamping * Time.deltaTime
+                );
+
+                currentPosition.y = newY;
+                target.position = currentPosition;
             }
         }
     }

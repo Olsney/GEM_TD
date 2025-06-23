@@ -6,6 +6,7 @@ using Game.GameMainFeature;
 using Game.Inputs;
 using Game.KillEnemy;
 using Game.Maze;
+using Game.PortraitCameras;
 using Game.Towers;
 
 namespace Game.Entity.ToStrings
@@ -21,7 +22,8 @@ namespace Game.Entity.ToStrings
             nameof(CheckPointComponent),
             nameof(StartPointComponent),
             nameof(FinishPointComponent),
-            nameof(TowerEnumComponent),
+            nameof(TowerSpiritComponent),
+            nameof(TowerComponent),
             nameof(WallComponent),
             nameof(ArmamentComponent),
             nameof(EnemyComponent),
@@ -30,6 +32,8 @@ namespace Game.Entity.ToStrings
             nameof(GameMainComponent),
             nameof(RoundCompleteComponent),
             nameof(EnemyFragComponent),
+            nameof(StatusComponent),
+            nameof(PortraitCameraComponent),
         };
     }
 }

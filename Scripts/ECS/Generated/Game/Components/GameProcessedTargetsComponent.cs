@@ -33,13 +33,13 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public Game.TargetCollection.ProcessedTargetsComponent processedTargets { get { return (Game.TargetCollection.ProcessedTargetsComponent)GetComponent(GameComponentsLookup.ProcessedTargets); } }
+    public Game.Battle.ProcessedTargetsComponent processedTargets { get { return (Game.Battle.ProcessedTargetsComponent)GetComponent(GameComponentsLookup.ProcessedTargets); } }
     public System.Collections.Generic.List<int> ProcessedTargets { get { return processedTargets.Value; } }
     public bool hasProcessedTargets { get { return HasComponent(GameComponentsLookup.ProcessedTargets); } }
 
     public GameEntity AddProcessedTargets(System.Collections.Generic.List<int> newValue) {
         var index = GameComponentsLookup.ProcessedTargets;
-        var component = (Game.TargetCollection.ProcessedTargetsComponent)CreateComponent(index, typeof(Game.TargetCollection.ProcessedTargetsComponent));
+        var component = (Game.Battle.ProcessedTargetsComponent)CreateComponent(index, typeof(Game.Battle.ProcessedTargetsComponent));
         component.Value = newValue;
         AddComponent(index, component);
         return this;
@@ -47,7 +47,7 @@ public partial class GameEntity {
 
     public GameEntity ReplaceProcessedTargets(System.Collections.Generic.List<int> newValue) {
         var index = GameComponentsLookup.ProcessedTargets;
-        var component = (Game.TargetCollection.ProcessedTargetsComponent)CreateComponent(index, typeof(Game.TargetCollection.ProcessedTargetsComponent));
+        var component = (Game.Battle.ProcessedTargetsComponent)CreateComponent(index, typeof(Game.Battle.ProcessedTargetsComponent));
         component.Value = newValue;
         ReplaceComponent(index, component);
         return this;

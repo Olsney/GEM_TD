@@ -16,7 +16,8 @@ namespace Game.Enemies
                 .AllOf(
                     GameMatcher.Enemy,
                     GameMatcher.Dead,
-                    GameMatcher.ProcessingDeath
+                    GameMatcher.ProcessingDeath,
+                    GameMatcher.Gold
                 )
                 .NoneOf(
                     GameMatcher.EnemyFragCreated
@@ -34,6 +35,7 @@ namespace Game.Enemies
                     .Empty()
                     .AddRound(enemy.Round)
                     .AddPlayerId(enemy.PlayerId)
+                    .AddGold(enemy.Gold)
                     .With(x => x.isEnemyFrag = true);
             }
         }

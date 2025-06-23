@@ -6,7 +6,10 @@ using Game.Battle.Configs;
 using Game.Enemies;
 using Game.Entity;
 using Game.Extensions;
-using Game.View;
+using Game.GameMainFeature;
+using Game.PlayerAbility.PlayerAbilityFactory;
+using Game.PlayerAbility.SwapAbility.Comps.Game.PlayerAbility.SwapAbility.Comps;
+using Game.Towers;
 using Services.AssetProviders;
 using Services.Identifiers;
 using Services.ProjectData;
@@ -20,13 +23,15 @@ public class GameEntityFactories
     private readonly IStaticDataService _staticDataService;
     private readonly GameContext _game;
     private readonly IProjectDataService _projectDataService;
+    private readonly IPlayerAbilityFactory _playerAbilityFactory;
 
     public GameEntityFactories(
         IIdentifierService identifierService,
         IAssetProvider assetProvider,
         IStaticDataService staticDataService,
         GameContext game,
-        IProjectDataService projectDataService
+        IProjectDataService projectDataService,
+        IPlayerAbilityFactory playerAbilityFactory
     )
     {
         _identifierService = identifierService;
@@ -34,6 +39,31 @@ public class GameEntityFactories
         _staticDataService = staticDataService;
         _game = game;
         _projectDataService = projectDataService;
+        _playerAbilityFactory = playerAbilityFactory;
+    }
+
+    public void CreateSpiritSelectRequest(GameEntity entity)
+    {
+        CreateGameEntity.Empty()
+            .AddId(_identifierService.Next())
+            .AddPlayerId(entity.PlayerId)
+            .AddWorldPosition(entity.WorldPosition)
+            .AddMazePosition(entity.MazePosition)
+            .AddTowerEnum(entity.TowerEnum)
+            .With(x => x.isRequestSpiritSelect = true)
+            ;
+    }
+
+    public void CreateSpiritsMergeRequest(GameEntity entity, TowerEnum targetTowerType)
+    {
+        CreateGameEntity.Empty()
+            .AddId(_identifierService.Next())
+            .AddWorldPosition(entity.WorldPosition)
+            .AddTowerEnum(targetTowerType)
+            .AddMazePosition(entity.MazePosition)
+            .AddPlayerId(entity.PlayerId)
+            .With(x => x.isMergeResult = true)
+            ;
     }
 
     public void CreateCursor()
@@ -56,11 +86,10 @@ public class GameEntityFactories
         CreateGameEntity
             .Empty()
             .AddId(_identifierService.Next())
-            .AddPrefab(_assetProvider.LoadAsset("CheckPoint").GetComponent<GameEntityView>())
+            .AddPrefab(_assetProvider.LoadAsset("Portal").GetComponent<GameEntityView>())
             .AddWorldPosition(new Vector3(positionX, 0, positionY))
             .AddPlayerId(playerId)
             .With(x => x.isStartPoint = true)
-            .With(x => x.isCanRaycast = true)
             .With(x => x.isHuman = isHuman)
             ;
     }
@@ -75,11 +104,10 @@ public class GameEntityFactories
         CreateGameEntity
             .Empty()
             .AddId(_identifierService.Next())
-            .AddPrefab(_assetProvider.LoadAsset("CheckPoint").GetComponent<GameEntityView>())
+            .AddPrefab(_assetProvider.LoadAsset("Throne").GetComponent<GameEntityView>())
             .AddWorldPosition(new Vector3(positionX, 0, positionY))
             .AddPlayerId(playerId)
             .With(x => x.isFinishPoint = true)
-            .With(x => x.isCanRaycast = true)
             .With(x => x.isHuman = isHuman)
             ;
     }
@@ -131,6 +159,7 @@ public class GameEntityFactories
             .AddDistanceToCenter(distanceToCenter)
             .With(x => x.isWall = true)
             .With(x => x.isCanRaycast = true)
+            .With(x => x.isSwapable = true)
             ;
     }
 
@@ -142,12 +171,14 @@ public class GameEntityFactories
     )
     {
         EnemyConfig config = _staticDataService.GetEnemyConfig(round);
+        EnemyCoefficient enemyCoefficient =
+            _staticDataService.GetEnemyCoefficient(_projectDataService.CurrentGameModeType);
 
         Dictionary<StatEnum, float> baseStats = InitStats.EmptyStatDictionary()
-            .With(x => x[StatEnum.MoveSpeed] = config.MoveSpeed)
-            .With(x => x[StatEnum.MaxHeathPoints] = config.MaxHealthPoints)
-            .With(x => x[StatEnum.RotationSpeed] = 10f)
-            .With(x => x[StatEnum.Armor] = 10f)
+                .With(x => x[StatEnum.MoveSpeed] = config.MoveSpeed)
+                .With(x => x[StatEnum.MaxHeathPoints] = config.MaxHealthPoints)
+                .With(x => x[StatEnum.RotationSpeed] = config.RotationSpeed)
+                .With(x => x[StatEnum.Armor] = config.Armor)
             ;
 
         CreateGameEntity
@@ -159,41 +190,48 @@ public class GameEntityFactories
             .AddWorldPosition(new Vector3(position.x, 0, position.y))
             .AddRotation(default)
             .AddDirection(default)
-            .AddMoveSpeed(baseStats[StatEnum.MoveSpeed])
+            .AddMoveSpeedStat(baseStats[StatEnum.MoveSpeed] * enemyCoefficient.Speed)
             .AddTargetPlaceIndex(0)
             .AddPathNumber(0)
-            .AddCurrentHealthPoints(baseStats[StatEnum.MaxHeathPoints])
-            .AddMaxHealthPoints(baseStats[StatEnum.MaxHeathPoints])
+            .AddCurrentHealthPoints(baseStats[StatEnum.MaxHeathPoints] * enemyCoefficient.HealthPoint)
+            .AddMaxHealthPoints(baseStats[StatEnum.MaxHeathPoints] * enemyCoefficient.HealthPoint)
             .AddArmor(baseStats[StatEnum.Armor])
             .AddRotationSpeed(baseStats[StatEnum.RotationSpeed])
             .AddRound(round)
             .AddPlayerId(playerId)
             .AddAge(0)
+            .AddGold(10)
             .With(x => x.isCanRaycast = true)
             .With(x => x.isEnemy = true)
             .With(x => x.isTarget = true)
             .With(x => x.isTurnedAlongDirection = true)
             .With(x => x.isMovementAvailable = true)
-            .With(x => x.isHuman = isHuman, when: isHuman);
+            .With(x => x.isHuman = isHuman, when: isHuman)
+            .With(x => x.isFlyable = config.IsFlyable, when: config.IsFlyable);
     }
 
     public GameEntity CreatePlayer(bool isHuman, int index)
     {
         var player = CreateGameEntity
-            .Empty()
-            .AddId(_identifierService.Next())
-            .AddGameLoopStateEnum(GameLoopStateEnum.PlayerAbility)
-            .AddSpiritPlaced(0)
-            .AddLevel(3)
-            .AddRound(1)
-            .AddCurrentHealthPoints(100)
-            .AddTotalGameTime(0)
-            .AddRoundTimer(0)
-            .AddIndex(index)
-            .With(x => x.isPlayer = true)
-            .With(x => x.isHuman = true, when: isHuman)
+                .Empty()
+                .AddId(_identifierService.Next())
+                .AddGameLoopStateEnum(GameLoopStateEnum.PlayerAbility)
+                .AddSpiritPlaced(0)
+                .AddLevel(1)
+                .AddRound(1)
+                .AddCurrentHealthPoints(100)
+                .AddTotalGameTime(0)
+                .AddRoundTimer(0)
+                .AddIndex(index)
+                .With(x => x.isPlayer = true)
+                .With(x => x.isHuman = true, when: isHuman)
+                .With(x => x.AddGold(350), when: isHuman)
             ;
-        
+
+        _playerAbilityFactory.CreatePlayerSwapAbility(player.Id);
+        _playerAbilityFactory.CreateHealThroneAbility(player.Id);
+        _playerAbilityFactory.CreateTimeLapseAbility(player.Id);
+
         return player;
     }
 
@@ -239,6 +277,7 @@ public class GameEntityFactories
             .AddPrefab(setup.ExplosionPrefab)
             .AddWorldPosition(position)
             .AddSelfDestructTimer(2f)
+            .With(x => x.isExplosion = true)
             ;
     }
 
@@ -257,7 +296,42 @@ public class GameEntityFactories
             .AddPrefab(setup.MuzzleFlashPrefab)
             .AddWorldPosition(position)
             .AddRotation(rotation)
+            .AddProducerId(producerId)
             .AddSelfDestructTimer(2f)
+            .With(x => x.isMuzzleFlash = true)
+            ;
+    }
+
+    public GameEntity CreateLeftMouseClick()
+    {
+        return CreateGameEntity
+                .Empty()
+                .AddId(_identifierService.Next())
+                .With(x => x.isDestructed = true)
+                .With(x => x.isLeftMouseButtonClick = true)
+            ;
+    }
+
+    public void CreateCancelSelectionRequest()
+    {
+        CreateGameEntity
+            .Empty()
+            .AddId(_identifierService.Next())
+            .With(x => x.isCancelSelectionRequest = true)
+            .With(x => x.isDestructed = true)
+            ;
+    }
+
+    public void CreateSwapAbilityFinishRequest(AbilityEnum abilityEnum, int firstTower, int secondTower)
+    {
+        CreateGameEntity
+            .Empty()
+            .AddId(_identifierService.Next())
+            .AddAbilityUsingFinishedEvent(abilityEnum)
+            .AddSwapFirstTowerSelected(firstTower)
+            .AddSwapSecondTowerSelected(secondTower)
+            .With(x => x.isSwapFinishRequest = true)
+            .With(x => x.isDestructed = true)
             ;
     }
 }

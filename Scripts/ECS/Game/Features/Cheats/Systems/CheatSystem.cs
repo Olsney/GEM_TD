@@ -50,12 +50,12 @@ namespace Game.Cheats
             {
                 if (_timeService.IsPaused)
                 {
-                    _timeService.StartTime();
+                    _timeService.UnPause();
                     Debug.Log("▶ Resume");
                 }
                 else
                 {
-                    _timeService.StopTime();
+                    _timeService.Pause();
                     Debug.Log("⏸ Paused");
                 }
             }

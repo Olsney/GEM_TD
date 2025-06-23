@@ -11,15 +11,39 @@ namespace Game.Extensions
             {
                 case AbilityEnum.Unknown:
                     break;
-                case AbilityEnum.SingleShotAttack:
-                    entity.isSingleShotAbility = true;
+                
+                case AbilityEnum.BasicAttack:
+                    entity.isBasicAttackAbility = true;
                     break;
-                case AbilityEnum.SplitShotAttack:
-                    entity.isSplitshotAbility = true;
+                
+                case AbilityEnum.Split:
+                    entity.isSplitShotAbility = true;
                     break;
+                
                 case AbilityEnum.Cleave:
                     entity.isCleaveAbility = true;
                     break;
+                
+                case AbilityEnum.Pierce:
+                    entity.isPierceAbility = true;
+                    break;
+                
+                case AbilityEnum.Poison:
+                    entity.isPoisonAbility = true;
+                    break;
+                
+                case AbilityEnum.Aura:
+                    entity.isAuraAbility = true;
+                    break;
+                
+                case AbilityEnum.Slow:
+                    entity.isSlowAbility = true;
+                    break;
+                
+                case AbilityEnum.Speed:
+                    entity.isSpeedAbility = true;
+                    break;
+                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityEnum), abilityEnum, null);
             }

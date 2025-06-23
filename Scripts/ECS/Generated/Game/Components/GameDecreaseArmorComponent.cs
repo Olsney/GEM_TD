@@ -6,9 +6,6 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
-using Game.Battle;
-
 public sealed partial class GameMatcher {
 
     static Entitas.IMatcher<GameEntity> _matcherDecreaseArmor;
@@ -36,7 +33,7 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly DecreaseArmorComponent decreaseArmorComponent = new DecreaseArmorComponent();
+    static readonly Game.Battle.DecreaseArmorComponent decreaseArmorComponent = new Game.Battle.DecreaseArmorComponent();
 
     public bool isDecreaseArmor {
         get { return HasComponent(GameComponentsLookup.DecreaseArmor); }

@@ -1,4 +1,3 @@
-using Game.View;
 using UnityEngine;
 using UnityEngine.Serialization;
 

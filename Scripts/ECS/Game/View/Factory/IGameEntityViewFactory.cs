@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Game.View.Factory
+namespace Game.Factory
 {
     public interface IGameEntityViewFactory
     {

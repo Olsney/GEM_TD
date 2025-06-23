@@ -8,17 +8,17 @@
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherSplitshotTargets;
+    static Entitas.IMatcher<GameEntity> _matcherSplitShotTargets;
 
-    public static Entitas.IMatcher<GameEntity> SplitshotTargets {
+    public static Entitas.IMatcher<GameEntity> SplitShotTargets {
         get {
-            if (_matcherSplitshotTargets == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.SplitshotTargets);
+            if (_matcherSplitShotTargets == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.SplitShotTargets);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherSplitshotTargets = matcher;
+                _matcherSplitShotTargets = matcher;
             }
 
-            return _matcherSplitshotTargets;
+            return _matcherSplitShotTargets;
         }
     }
 }
@@ -33,28 +33,28 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public Game.Battle.SplitShot.SplitshotTargetsComponent splitshotTargets { get { return (Game.Battle.SplitShot.SplitshotTargetsComponent)GetComponent(GameComponentsLookup.SplitshotTargets); } }
-    public Game.Battle.SplitShot.Data.TargetDistanceData?[] SplitshotTargets { get { return splitshotTargets.Value; } }
-    public bool hasSplitshotTargets { get { return HasComponent(GameComponentsLookup.SplitshotTargets); } }
+    public Game.Battle.SplitShot.SplitShotTargetsComponent splitShotTargets { get { return (Game.Battle.SplitShot.SplitShotTargetsComponent)GetComponent(GameComponentsLookup.SplitShotTargets); } }
+    public Game.Battle.SplitShot.Data.TargetDistanceData?[] SplitShotTargets { get { return splitShotTargets.Value; } }
+    public bool hasSplitShotTargets { get { return HasComponent(GameComponentsLookup.SplitShotTargets); } }
 
-    public GameEntity AddSplitshotTargets(Game.Battle.SplitShot.Data.TargetDistanceData?[] newValue) {
-        var index = GameComponentsLookup.SplitshotTargets;
-        var component = (Game.Battle.SplitShot.SplitshotTargetsComponent)CreateComponent(index, typeof(Game.Battle.SplitShot.SplitshotTargetsComponent));
+    public GameEntity AddSplitShotTargets(Game.Battle.SplitShot.Data.TargetDistanceData?[] newValue) {
+        var index = GameComponentsLookup.SplitShotTargets;
+        var component = (Game.Battle.SplitShot.SplitShotTargetsComponent)CreateComponent(index, typeof(Game.Battle.SplitShot.SplitShotTargetsComponent));
         component.Value = newValue;
         AddComponent(index, component);
         return this;
     }
 
-    public GameEntity ReplaceSplitshotTargets(Game.Battle.SplitShot.Data.TargetDistanceData?[] newValue) {
-        var index = GameComponentsLookup.SplitshotTargets;
-        var component = (Game.Battle.SplitShot.SplitshotTargetsComponent)CreateComponent(index, typeof(Game.Battle.SplitShot.SplitshotTargetsComponent));
+    public GameEntity ReplaceSplitShotTargets(Game.Battle.SplitShot.Data.TargetDistanceData?[] newValue) {
+        var index = GameComponentsLookup.SplitShotTargets;
+        var component = (Game.Battle.SplitShot.SplitShotTargetsComponent)CreateComponent(index, typeof(Game.Battle.SplitShot.SplitShotTargetsComponent));
         component.Value = newValue;
         ReplaceComponent(index, component);
         return this;
     }
 
-    public GameEntity RemoveSplitshotTargets() {
-        RemoveComponent(GameComponentsLookup.SplitshotTargets);
+    public GameEntity RemoveSplitShotTargets() {
+        RemoveComponent(GameComponentsLookup.SplitShotTargets);
         return this;
     }
 }

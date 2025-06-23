@@ -1,7 +1,7 @@
-using System.Collections.Generic;
 using Game.Battle;
-using Game.View;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -10,20 +10,33 @@ namespace Game.Enemies
     [ExecuteInEditMode]
     public class EnemyGizmo : MonoBehaviour
     {
+#if UNITY_EDITOR
+
         [FormerlySerializedAs("entityView")]
         public GameEntityView EntityView;
 
-        [SerializeField] private Vector3 healthOffset = new Vector3(0, 2f, 0);
-        [SerializeField] private Vector3 armorOffset = new Vector3(0, 2.5f, 0);
-        [SerializeField] private Vector3 speedOffset = new Vector3(0, 1.5f, 0);
+        [SerializeField]
+        private Vector3 healthOffset = new Vector3(0, 2f, 0);
+
+        [SerializeField]
+        private Vector3 armorOffset = new Vector3(0, 2.5f, 0);
+
+        [SerializeField]
+        private Vector3 speedOffset = new Vector3(0, 1.5f, 0);
 
         [Header("Armor Display")]
-        [SerializeField] private Color shieldColor = Color.blue;
-        [SerializeField] private Color armorTextColor = Color.white;
-        [SerializeField] private Vector2 shieldSize = new Vector2(0.8f, 0.8f);
+        [SerializeField]
+        private Color shieldColor = Color.blue;
 
-        [Header("Speed Display")]
-        [SerializeField] private Color speedTextColor = Color.green;
+        [SerializeField]
+        private Color armorTextColor = Color.white;
+
+        [SerializeField]
+        private Vector2 shieldSize = new Vector2(0.8f, 0.8f);
+
+        [Header("AttackSpeedStatus Display")]
+        [SerializeField]
+        private Color speedTextColor = Color.green;
 
         private void OnDrawGizmos()
         {
@@ -60,10 +73,12 @@ namespace Game.Enemies
                 return;
 
             float baseArmor = entity.BaseStats.ContainsKey(StatEnum.Armor)
-                ? entity.BaseStats[StatEnum.Armor] : 0f;
+                ? entity.BaseStats[StatEnum.Armor]
+                : 0f;
 
             float modifier = entity.StatModifiers.ContainsKey(StatEnum.Armor)
-                ? entity.StatModifiers[StatEnum.Armor] : 0f;
+                ? entity.StatModifiers[StatEnum.Armor]
+                : 0f;
 
             float currentArmor = baseArmor + modifier;
 
@@ -102,10 +117,12 @@ namespace Game.Enemies
                 return;
 
             float baseSpeed = entity.BaseStats.ContainsKey(StatEnum.MoveSpeed)
-                ? entity.BaseStats[StatEnum.MoveSpeed] : 0f;
+                ? entity.BaseStats[StatEnum.MoveSpeed]
+                : 0f;
 
             float modifier = entity.StatModifiers.ContainsKey(StatEnum.MoveSpeed)
-                ? entity.StatModifiers[StatEnum.MoveSpeed] : 0f;
+                ? entity.StatModifiers[StatEnum.MoveSpeed]
+                : 0f;
 
             float currentSpeed = baseSpeed + modifier;
 
@@ -117,7 +134,8 @@ namespace Game.Enemies
             };
 
             Vector3 labelPosition = transform.position + speedOffset;
-            Handles.Label(labelPosition, $"Speed: {currentSpeed:F1}", style);
+            Handles.Label(labelPosition, $"AttackSpeedStatus: {currentSpeed:F1}", style);
         }
+#endif
     }
 }

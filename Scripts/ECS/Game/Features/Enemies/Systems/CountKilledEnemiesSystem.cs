@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using Entitas;
+using Game.Extensions;
+using Services.StaticData;
+using UnityEngine;
 
 namespace Game.Enemies
 {
@@ -8,18 +11,26 @@ namespace Game.Enemies
         private readonly IGroup<GameEntity> _roundCompletes;
         private readonly IGroup<GameEntity> _frags;
         private readonly List<GameEntity> _buffer = new List<GameEntity>(1);
+        private readonly GameContext _game;
+        private readonly IStaticDataService _staticDataService;
 
-        public CountKilledEnemiesSystem(GameContext game)
+        public CountKilledEnemiesSystem(
+            GameContext game,
+            IStaticDataService staticDataService
+        )
         {
+            _game = game;
+            _staticDataService = staticDataService;
             _frags = game.GetGroup(
                 GameMatcher
                     .AllOf(
                         GameMatcher.Round,
                         GameMatcher.PlayerId,
-                        GameMatcher.EnemyFrag
+                        GameMatcher.EnemyFrag,
+                        GameMatcher.Gold
                     )
             );
-            
+
             _roundCompletes = game.GetGroup(
                 GameMatcher
                     .AllOf(
@@ -38,12 +49,19 @@ namespace Game.Enemies
             {
                 if (frag.PlayerId != roundComplete.PlayerId)
                     continue;
-                
+
                 if (frag.Round != roundComplete.Round)
                     continue;
 
+                var player = _game.GetEntityWithId(roundComplete.PlayerId);
+
+                if (player.isHuman)
+                {
+                    player.GainGold(frag.Gold);
+                }
+
                 roundComplete.ReplaceEnemiesKilled(roundComplete.EnemiesKilled + 1);
-                
+
                 frag.isDestructed = true;
                 frag.isEnemyFrag = false;
             }

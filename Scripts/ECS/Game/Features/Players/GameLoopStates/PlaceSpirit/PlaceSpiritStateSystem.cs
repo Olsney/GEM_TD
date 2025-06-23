@@ -69,7 +69,7 @@ namespace Game.PlaceSpirit
 
                 if (player.spiritPlaced.Value < _config.ProjectConfig.TowersPerRound * player.Round)
                 {
-                    TowerEnum towerEnum = _towerRandomer.GetTowerType(player.Level);
+                    TowerEnum towerEnum = _towerRandomer.GetTowerEnum(player.Level);
 
                     Vector2Int mazePosition = MazePosition(player);
 

@@ -6,9 +6,6 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
-using Game.Battle;
-
 public sealed partial class GameMatcher {
 
     static Entitas.IMatcher<GameEntity> _matcherCleaveArmamentRadius;
@@ -36,13 +33,13 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public CleaveArmamentRadiusComponent cleaveArmamentRadius { get { return (CleaveArmamentRadiusComponent)GetComponent(GameComponentsLookup.CleaveArmamentRadius); } }
+    public Game.Battle.CleaveArmamentRadiusComponent cleaveArmamentRadius { get { return (Game.Battle.CleaveArmamentRadiusComponent)GetComponent(GameComponentsLookup.CleaveArmamentRadius); } }
     public float CleaveArmamentRadius { get { return cleaveArmamentRadius.Value; } }
     public bool hasCleaveArmamentRadius { get { return HasComponent(GameComponentsLookup.CleaveArmamentRadius); } }
 
     public GameEntity AddCleaveArmamentRadius(float newValue) {
         var index = GameComponentsLookup.CleaveArmamentRadius;
-        var component = (CleaveArmamentRadiusComponent)CreateComponent(index, typeof(CleaveArmamentRadiusComponent));
+        var component = (Game.Battle.CleaveArmamentRadiusComponent)CreateComponent(index, typeof(Game.Battle.CleaveArmamentRadiusComponent));
         component.Value = newValue;
         AddComponent(index, component);
         return this;
@@ -50,7 +47,7 @@ public partial class GameEntity {
 
     public GameEntity ReplaceCleaveArmamentRadius(float newValue) {
         var index = GameComponentsLookup.CleaveArmamentRadius;
-        var component = (CleaveArmamentRadiusComponent)CreateComponent(index, typeof(CleaveArmamentRadiusComponent));
+        var component = (Game.Battle.CleaveArmamentRadiusComponent)CreateComponent(index, typeof(Game.Battle.CleaveArmamentRadiusComponent));
         component.Value = newValue;
         ReplaceComponent(index, component);
         return this;

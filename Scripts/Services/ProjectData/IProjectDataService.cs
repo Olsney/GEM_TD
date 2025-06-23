@@ -9,7 +9,9 @@ namespace Services.ProjectData
     {
         List<Vector2> StartPositions { get; }
         MazeDataSO CurrentMazeData { get; }
+        GameModeEnum CurrentGameModeType { get; }
         void SetGameMode(GameModeEnum gameModeEnum);
         void ResetGameModes();
+        void SetMazePlan(MazeDataSO mazeData);
     }
 }

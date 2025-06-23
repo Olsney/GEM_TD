@@ -1,5 +1,4 @@
 ﻿using Entitas;
-using Game.View;
 
 namespace Game.CommonComponents
 {

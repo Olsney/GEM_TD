@@ -1,10 +1,13 @@
-﻿namespace Game.Cameras
+﻿using System;
+
+namespace Game.Cameras
 {
+    [Serializable]
     public class CameraBoundsData
     {
-        public float MaxZ = float.MinValue;
-        public float MinX = float.MaxValue;
-        public float MaxX = float.MinValue;
-        public float MinZ = float.MaxValue;
+        public float maxHeight;
+        public float minHeight;
+        public float maxWidth;
+        public float minWidth;
     }
 }

@@ -83,10 +83,12 @@ namespace Game.SpiritToTower
             }
         }
 
-        private static void DestroySpiritAbilities(GameEntity spirit)
+        private void DestroySpiritAbilities(GameEntity spirit)
         {
-            foreach (GameEntity ability in spirit.Abilities) 
-                ability.isDestructed = true;
+            foreach (var ability in spirit.Abilities)
+            {
+                _game.GetEntityWithId(ability).isDestructed = true;
+            }
         }        
         
         private void DestroyBasicAttackAbility(GameEntity spirit)

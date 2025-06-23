@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Game.View
+namespace Game
 {
   public interface IGameEntityView
   {

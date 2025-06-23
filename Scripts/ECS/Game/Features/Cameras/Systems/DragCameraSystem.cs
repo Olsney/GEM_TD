@@ -13,7 +13,7 @@ namespace Game.Cameras
                 .AllOf(
                     GameMatcher.CameraDrag,
                     GameMatcher.CameraInput,
-                    GameMatcher.CameraInput
+                    GameMatcher.CameraTarget
                     ));
         }
 
@@ -24,7 +24,7 @@ namespace Game.Cameras
                 Vector3 dragDelta = camera.CameraDrag;
                 var transform = camera.CameraTarget;
             
-                Vector3 move = new Vector3(-dragDelta.x, 0, -dragDelta.z);
+                Vector3 move = new Vector3(dragDelta.x, 0, dragDelta.z);
                 transform.Translate(move, Space.World);
                 camera.ReplaceCameraDrag(Vector3.zero);
             }

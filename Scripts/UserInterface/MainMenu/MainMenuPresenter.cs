@@ -8,8 +8,6 @@ namespace UserInterface.MainMenu
 {
     public class MainMenuPresenter : Presenter<MainMenuView>, IInitializable
     {
-        private const string BattleSceneName = "Gameplay";
-
         private readonly IProjectDataService _projectDataService;
         private readonly IGameStateMachine _stateMachine;
 
@@ -27,39 +25,47 @@ namespace UserInterface.MainMenu
         {
             View.Button1.onClick.AddListener(() =>
             {
-                _projectDataService.SetGameMode(GameModeEnum.SingleSmall);
-                EnterBattleLoadingState();
+                EnterMazeSelectorState(GameModeEnum.SingleSmall);
             });
 
             View.Button2.onClick.AddListener(() =>
             {
-                _projectDataService.SetGameMode(GameModeEnum.RaceSmall);
-                EnterBattleLoadingState();
+                EnterMazeSelectorState(GameModeEnum.RaceSmall);
             });
 
             View.Button3.onClick.AddListener(() =>
             {
-                _projectDataService.SetGameMode(GameModeEnum.SingleLarge);
-                EnterBattleLoadingState();
+                EnterMazeSelectorState(GameModeEnum.SingleLarge);
             });
 
-            View.gameObject.SetActive(false);
+            View.Button4.onClick.AddListener(() =>
+            {
+                EnterMazeSelectorState(GameModeEnum.SingleLargeDouble);
+            });
+
+            View.Button5.onClick.AddListener(() =>
+            {
+                EnterMazeSelectorState(GameModeEnum.SingleLargeTriple);
+            });
+
+            View.Button6.onClick.AddListener(() =>
+            {
+                EnterMazeSelectorState(GameModeEnum.SingleLargeQuad);
+            });
+
+            Hide();
         }
 
         public void Enable()
         {
             _projectDataService.ResetGameModes();
-            View.gameObject.SetActive(true); 
+            Show();
         }
 
-        public void Disable()
-        {
-            View.gameObject.SetActive(false); 
-        }
+        public void Disable() => 
+            Hide();
 
-        private void EnterBattleLoadingState()
-        {
-            _stateMachine.Enter<LoadingBattleState, string>(BattleSceneName);
-        }
+        private void EnterMazeSelectorState(GameModeEnum gameModeEnum) =>
+            _stateMachine.Enter<MazeSelectorState, GameModeEnum>(gameModeEnum);
     }
 }

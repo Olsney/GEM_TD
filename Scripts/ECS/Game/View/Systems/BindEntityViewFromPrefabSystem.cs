@@ -1,23 +1,23 @@
 using System.Collections.Generic;
 using Entitas;
-using Game.View.Binder;
+using Game.Binder;
 using UnityEngine;
 
-namespace Game.View.Systems
+namespace Game.Systems
 {
     public class BindEntityViewFromPrefabSystem : IExecuteSystem
     {
-        private readonly IGameEntityViewBinder _binder;
+        private readonly IGameEntityViewSpawner _spawner;
 
         private readonly IGroup<GameEntity> _entities;
         private readonly List<GameEntity> _buffer = new(32);
 
         public BindEntityViewFromPrefabSystem(
             GameContext game,
-            IGameEntityViewBinder gameEntityViewBinder
+            IGameEntityViewSpawner gameEntityViewSpawner
         )
         {
-            _binder = gameEntityViewBinder;
+            _spawner = gameEntityViewSpawner;
 
             _entities =
                 game.GetGroup(
@@ -40,7 +40,7 @@ namespace Game.View.Systems
                 if (entity.hasWorldPosition)
                     at = entity.WorldPosition;
 
-                _binder.Bind(entity, at);
+                _spawner.Spawn(entity, at);
                 entity.RemovePrefab();
             }
         }

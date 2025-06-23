@@ -1,14 +1,19 @@
 using System;
 using System.Collections.Generic;
+using Game.Towers;
 using Services.AudioServices.AudioMixers;
 using Services.AudioServices.Sounds;
+using Services.AudioServices.Sounds.Configs;
+using Services.Cameras;
+using Services.StaticData;
 using UnityEngine;
 using UnityEngine.Audio;
 using Zenject;
+using Object = UnityEngine.Object;
 
 namespace Services.AudioServices
 {
-    public class AudioService : ITickable
+    public class AudioService : ITickable, IInitializable
     {
         private const float SliderMutedLoudness = -40;
         private const float MutedLoudness = -80;
@@ -19,27 +24,41 @@ namespace Services.AudioServices
         // ReSharper disable once NotAccessedField.Local
         private readonly SoundPlayer _soundPlayer;
         private readonly AudioMixer _audioMixer;
+
         // ReSharper disable once CollectionNeverUpdated.Local
         private readonly Dictionary<AudioMixerGroupEnum, AudioMixerGroupWrapper> _audioMixerGroupWrappers = new();
 
-        private Transform _container;
+        private readonly IStaticDataService _staticDataService;
 
-        public AudioService(
-            AudioMixer audioMixer
-        )
+        private readonly Transform _container;
+        private readonly AudioListener _audioListener;
+        private readonly ICameraProvider _cameraProvider;
+
+        public AudioService(AudioMixer audioMixer,
+            IStaticDataService staticDataService,
+            AudioSourceContainer audioSourceContainer,
+            AudioListener audioListener,
+            ICameraProvider cameraProvider)
         {
             _audioMixer = audioMixer;
+            _staticDataService = staticDataService;
+            _audioListener = audioListener;
+            _cameraProvider = cameraProvider;
+            _container = audioSourceContainer.transform;
 
             _soundPlayer = new SoundPlayer();
         }
 
         public bool IsWorking { get; private set; } = true;
+
         public float MusicLoudness { get; private set; }
+
         public float SoundEffectsLoudness { get; private set; }
 
-        public void Init()
+        public bool IsMusicOn { get; private set; }
+
+        public void Initialize()
         {
-            CreateContainer();
             CreateAudioMixerGroupWrappers();
         }
 
@@ -51,7 +70,6 @@ namespace Services.AudioServices
         //   _audioMixer.SetFloat(Music, MusicLoudness);
         //   _audioMixer.SetFloat(SoundEffects, SoundEffectsLoudness);
         // }
-
         // public void WriteProgress(ProjectProgress projectProgress)
         // {
         //   projectProgress.MusicLoudness = MusicLoudness;
@@ -62,9 +80,11 @@ namespace Services.AudioServices
         {
             foreach (AudioMixerGroupWrapper audioMixerGroupWrapper in _audioMixerGroupWrappers.Values)
                 audioMixerGroupWrapper.Tick();
+
+            MoveAudioListener();
         }
 
-        public void Play(SoundEnum @enum, Vector3 at = default)
+        public void Play(SoundEnum @enum, bool isNeedRandomPitch = true, Vector3 at = default)
         {
             if (IsWorking == false)
                 return;
@@ -72,25 +92,39 @@ namespace Services.AudioServices
             if (@enum == SoundEnum.Unknown)
                 throw new Exception("Unknown sound id");
 
-            throw new NotImplementedException();
+            var soundSetup = _staticDataService.GetSoundConfig(@enum);
 
-            // SoundArtSetup soundSetup = _artConfigProvider.Sounds[id];
-            //
-            // AudioMixerGroupId groupId = _artConfigProvider.AudioMixerGroups[soundSetup.AudioMixerGroupId].Id;
-            // AudioMixerGroupArtSetup groupSetup = _artConfigProvider.AudioMixerGroups[groupId];
-            //
-            // AudioSourceWrapper audioSourceWrapper = _audioMixerGroupWrappers[groupId].GetOrNull();
-            //
-            // if (audioSourceWrapper == null)
-            //     return;
-            //
-            // audioSourceWrapper.IsActive = true;
-            //
-            // AudioSource source = audioSourceWrapper.AudioSource;
-            //
-            // AudioClip clip = soundSetup.AudioClips[UnityEngine.Random.Range(0, soundSetup.AudioClips.Count)];
-            //
-            // _soundPlayer.Play(clip, source, soundSetup.Volume, at, groupSetup.Loop);
+            var groupId = _staticDataService.GetAudioMixerGroupEnum(soundSetup);
+            var groupSetup = _staticDataService.GetAudioMixerGroupSetup(groupId);
+
+            var audioSourceWrapper = _audioMixerGroupWrappers[groupId].GetOrNull();
+
+            if (audioSourceWrapper == null)
+                return;
+
+            audioSourceWrapper.IsActive = true;
+
+            var source = audioSourceWrapper.AudioSource;
+            
+            if(isNeedRandomPitch)
+                source.pitch = UnityEngine.Random.Range(0.95f, 1.1f);
+
+            var clip = soundSetup.AudioClips[UnityEngine.Random.Range(0, soundSetup.AudioClips.Count)];
+
+            _soundPlayer.Play(clip, source, soundSetup.Volume, at, groupSetup.Loop);
+        }
+
+        public void PlayMusic(SoundEnum @enum)
+        {
+            IsMusicOn = true;
+
+            if (IsMusicOn)
+                Play(@enum, false);
+        }
+
+        public void PlayByTowerEnum(TowerEnum towerEnum, Vector3 at = default)
+        {
+            Play(_staticDataService.GetSoundByTowerEnum(towerEnum),true, at);
         }
 
         public void StopAll()
@@ -131,52 +165,60 @@ namespace Services.AudioServices
                 audioMixerGroupWrapper.UnMute();
         }
 
-        private void CreateContainer()
-        {
-            // AudioSourceContainer prefab = _devConfigProvider.GetPrefabForComponent<AudioSourceContainer>(PrefabId.AudioSourceContainer);
-            // AudioSourceContainer container = _factory.InstantiatePrefabForComponent(prefab);
-            // _container = container.transform;
-        }
-
         private void CreateAudioMixerGroupWrappers()
         {
-            // AudioMixerGroupId[] groupIds = _artConfigProvider.AudioMixerGroups.Keys.ToArray();
-            //
-            // foreach (AudioMixerGroupId id in groupIds)
-            // {
-            //     AudioMixerGroupArtSetup setup = _artConfigProvider.AudioMixerGroups[id];
-            //
-            //     float cooldown = setup.Cooldown;
-            //     int count = setup.Count;
-            //
-            //     GameObject gameObject = CreateAudioMixerGroudWrapper(id, cooldown);
-            //
-            //     for (int i = 0; i < count; i++)
-            //         CreateAudioSourceWrapper(gameObject, i, id);
-            // }
+            AudioMixerGroupEnum[] groupIds = _staticDataService.GetAudioMixerGroupEnums();
+
+            foreach (var id in groupIds)
+            {
+                var setup = _staticDataService.GetAudioMixerGroupSetup(id);
+
+                float cooldown = setup.Cooldown;
+                int count = setup.Count;
+
+                var gameObject = CreateAudioMixerGroudWrapper(id, cooldown);
+
+                for (int i = 0; i < count; i++)
+                    CreateAudioSourceWrapper(gameObject, i, id);
+            }
         }
 
-        // private GameObject CreateAudioMixerGroudWrapper(AudioMixerGroupId id, float cooldown)
-        // {
-        //     AudioMixerGroupArtSetup setup = _artConfigProvider.AudioMixerGroups[id];
-        //     AudioMixerGroup group = setup.AudioMixerGroup;
-        //     var gameObject = new GameObject(group.name + "Group");
-        //     gameObject.transform.SetParent(_container.transform);
-        //     var audioMixerGroupWrapper = new AudioMixerGroupWrapper(group, cooldown);
-        //     _audioMixerGroupWrappers.Add(id, audioMixerGroupWrapper);
-        //     return gameObject;
-        // }
-        //
-        // private void CreateAudioSourceWrapper(GameObject groupGameObject, int count, AudioMixerGroupId id)
-        // {
-        //     AudioMixerGroup group = _artConfigProvider.AudioMixerGroups[id].AudioMixerGroup;
-        //     GameObject gameObject = _factory.InstantiatePrefab(_devConfigProvider.GetPrefab(PrefabId.AudioSource));
-        //     gameObject.transform.SetParent(groupGameObject.transform);
-        //     gameObject.name = groupGameObject.name + count;
-        //     var audioSource = gameObject.GetComponent<AudioSource>();
-        //     audioSource.outputAudioMixerGroup = group;
-        //
-        //     _audioMixerGroupWrappers[id].Add(new AudioSourceWrapper(audioSource));
-        // }
+        private GameObject CreateAudioMixerGroudWrapper(AudioMixerGroupEnum id, float cooldown)
+        {
+            var setup = _staticDataService.GetAudioMixerGroupSetup(id);
+            var group = setup.AudioMixerGroup;
+            var gameObject = new GameObject(group.name + "Group");
+            gameObject.transform.SetParent(_container.transform);
+            var audioMixerGroupWrapper = new AudioMixerGroupWrapper(group, cooldown);
+            _audioMixerGroupWrappers.Add(id, audioMixerGroupWrapper);
+            return gameObject;
+        }
+
+        private void CreateAudioSourceWrapper(GameObject groupGameObject, int count, AudioMixerGroupEnum id)
+        {
+            var group = _staticDataService.GetAudioMixerGroupSetup(id).AudioMixerGroup;
+            var gameObject = Object.Instantiate(_staticDataService.ProjectConfig.AudioSourcePrefab,
+                groupGameObject.transform);
+            gameObject.name = groupGameObject.name + count;
+            var audioSource = gameObject.GetComponent<AudioSource>();
+            audioSource.outputAudioMixerGroup = group;
+
+            _audioMixerGroupWrappers[id].Add(new AudioSourceWrapper(audioSource));
+        }
+
+        private void MoveAudioListener()
+        {
+            if (_cameraProvider.Camera)
+            {
+                _audioListener.transform.position = _cameraProvider.Camera.transform.position;
+            }
+            else
+            {
+                if (_audioListener.transform.position != Vector3.zero)
+                {
+                    _audioListener.transform.position = Vector3.zero;
+                }
+            }
+        }
     }
 }

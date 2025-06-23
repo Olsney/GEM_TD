@@ -1,21 +1,36 @@
-﻿using System.Collections.Generic;
 using Entitas;
-using Infrastructure.States.GameStates;
+using Game.Battle;
 using Infrastructure.States.StateMachine;
 using Services.StaticData;
 using UnityEngine;
+using UserInterface.GameplayHeadsUpDisplay.CheatsPanel;
+using UserInterface.GameplayHeadsUpDisplay.FinishPanel;
+using UserInterface.GameplayHeadsUpDisplay.InfoPanel;
+using UserInterface.GameplayHeadsUpDisplay.ObjectInfoPanel;
+using UserInterface.GameplayHeadsUpDisplay.PlayerAbilityPanel;
+using UserInterface.GameplayHeadsUpDisplay.PlayerAbilityPanel.SwapAbility;
+using UserInterface.GameplayHeadsUpDisplay.PlayerPanel;
+using UserInterface.GameplayHeadsUpDisplay.TimerPanel;
 using Zenject;
 
 namespace UserInterface.GameplayHeadsUpDisplay
 {
     public class GameplayHeadsUpDisplayPresenter :
         Presenter<GameplayHeadsUpDisplayView>,
-        ICurrentHealthPointsListener,
-        IInitializable,
-        IRoundListener,
-        ITotalGameTimeListener,
-        IRoundTimerListener
+        IInitializable
     {
+        private readonly ChooseTowerPanelPresenter _chooseTowerPanelPresenter;
+        private readonly TowerMergePanelPresenter _towerMergePanelPresenter;
+        private readonly TimerPanelPresenter _timerPanelPresenter;
+        private readonly PlayerPanelPresenter _playerPanelPresenter;
+        private readonly PlayerAbilityPanelPresenter _playerAbilityPanelPresenter;
+        private readonly CheatsPanelPresenter _cheatsPanelPresenter;
+        private readonly InfoPanelPresenter _infoPanelPresenter;
+        private readonly TowerSwapAbilityPanelPresenter _towerSwapAbilityPanelPresenter;
+        private readonly PausePanelPresenter _pausePanelPresenter;
+        private readonly FinishPanelPresenter _finishPanelPresenter;
+        private readonly ObjectInfoPanelPresenter _objectInfoPanelPresenter;
+
         private readonly GameContext _gameContext;
         private readonly IGameStateMachine _stateMachine;
         private readonly IStaticDataService _staticDataService;
@@ -24,181 +39,143 @@ namespace UserInterface.GameplayHeadsUpDisplay
         private IGroup<GameEntity> _humans;
         private IGroup<GameEntity> _aliveEnemies;
 
-        private readonly List<GameEntity> _result = new();
         private float _tickTime;
 
         public GameplayHeadsUpDisplayPresenter(
             GameplayHeadsUpDisplayView view,
-            GameContext gameContext,
-            IGameStateMachine stateMachine,
-            IStaticDataService staticDataService
+            ChooseTowerPanelPresenter chooseTowerPanelPresenter,
+            TowerMergePanelPresenter towerMergePanelPresenter,
+            TimerPanelPresenter timerPanelPresenter,
+            PlayerPanelPresenter playerPanelPresenter,
+            PlayerAbilityPanelPresenter playerAbilityPanelPresenter,
+            CheatsPanelPresenter cheatsPanelPresenter,
+            InfoPanelPresenter infoPanelPresenter,
+            TowerSwapAbilityPanelPresenter towerSwapAbilityPanelPresenter,
+            PausePanelPresenter pausePanelPresenter,
+            FinishPanelPresenter finishPanelPresenter,
+            ObjectInfoPanelPresenter objectInfoPanelPresenter,
+            GameContext gameContext
         ) : base(view)
         {
+            _objectInfoPanelPresenter = objectInfoPanelPresenter;
+            _chooseTowerPanelPresenter = chooseTowerPanelPresenter;
+            _towerMergePanelPresenter = towerMergePanelPresenter;
+            _timerPanelPresenter = timerPanelPresenter;
+            _playerPanelPresenter = playerPanelPresenter;
+            _playerAbilityPanelPresenter = playerAbilityPanelPresenter;
+            _cheatsPanelPresenter = cheatsPanelPresenter;
+            _infoPanelPresenter = infoPanelPresenter;
+            _towerSwapAbilityPanelPresenter = towerSwapAbilityPanelPresenter;
+            _pausePanelPresenter = pausePanelPresenter;
+            _finishPanelPresenter = finishPanelPresenter;
             _gameContext = gameContext;
-            _stateMachine = stateMachine;
-            _staticDataService = staticDataService;
-        }
-        
-        public void OnRoundTimer(GameEntity entity, float value)
-        {
-            int seconds = Mathf.FloorToInt(value);
-            int minutes = seconds / 60;
-            int secs = seconds % 60;
-
-            View.CurrentRoundTimerText.text = $"{minutes:D2}:{secs:D2}";
         }
 
         public void Initialize()
         {
-            View.gameObject.SetActive(false);
+            Hide();
         }
 
         public void Enable()
         {
-            View.gameObject.SetActive(true);
+            Show();
 
-            _spirits = _gameContext.GetGroup(GameMatcher.TowerSpirit);
+            _gameContext.OnEntityCreated += OnEntityCreated;
+            _gameContext.OnEntityDestroyed += OnEntityDestroyed;
 
-            _humans = _gameContext.GetGroup(
-                GameMatcher.AllOf(
-                    GameMatcher.Player,
-                    GameMatcher.Human
-                ));
+            _chooseTowerPanelPresenter.ButtonClicked += OnChooseTowerButtonClicked;
+            _chooseTowerPanelPresenter.Enabled += OnChooseTowerPanelEnabled;
+            _towerMergePanelPresenter.Closed += OnTowerMergePanelClosed;
+            _playerAbilityPanelPresenter.RequestToOpenAbilityPanel += OnRequestToOpenAbilityPanel;
+            _towerSwapAbilityPanelPresenter.SwapDisabled += OnSwapDisabled;
 
-            _aliveEnemies = _gameContext.GetGroup(
-                GameMatcher
-                    .AllOf(
-                        GameMatcher.Enemy,
-                        GameMatcher.Human
-                    )
-                    .NoneOf(
-                        GameMatcher.Dead
-                    ));
-
-            _spirits.OnEntityAdded += OnSpiritAdded;
-            _spirits.OnEntityRemoved += OnSpiritRemoved;
-            _humans.OnEntityAdded += OnHumanAdded;
-            _aliveEnemies.OnEntityAdded += OnAliveEnemyChanged;
-            _aliveEnemies.OnEntityRemoved += OnAliveEnemyChanged;
-
-            foreach (var human in _humans)
-            {
-                human.AddRoundListener(this);
-                human.AddTotalGameTimeListener(this);
-                human.AddRoundTimerListener(this);
-
-                if (human.hasTotalGameTime)
-                    OnTotalGameTime(human, human.totalGameTime.Value);
-            }
-
-            UpdateButtons();
-
-            View.RestartButton.onClick.AddListener(() => _stateMachine.Enter<RestartState>());
-
-            _tickTime = 0;
+            _chooseTowerPanelPresenter.Enable();
+            _towerMergePanelPresenter.Enable();
+            _timerPanelPresenter.Enable();
+            _playerPanelPresenter.Enable();
+            _playerAbilityPanelPresenter.Enable();
+            _cheatsPanelPresenter.Enable();
+            _infoPanelPresenter.Enable();
+            _towerSwapAbilityPanelPresenter.Enable();
+            _pausePanelPresenter.Enable();
+            _finishPanelPresenter.Enable();
+            _objectInfoPanelPresenter.Enable();
         }
 
-        private void OnAliveEnemyChanged(IGroup<GameEntity> group, GameEntity entity, int index, IComponent component)
+        private void OnEntityCreated(IContext context, IEntity entity)
         {
-            View.AliveEnemies.text = $"x {group.count}";
+            var gameEntity = entity as GameEntity;
+
+            if (gameEntity.isTowerSpirit)
+                Debug.LogError("5-6 логов");
+        }
+
+        private void OnEntityDestroyed(IContext context, IEntity entity)
+        {
         }
 
         public void Disable()
         {
-            _spirits.OnEntityAdded -= OnSpiritAdded;
-            _spirits.OnEntityRemoved -= OnSpiritRemoved;
-            _humans.OnEntityAdded -= OnHumanAdded;
-            _aliveEnemies.OnEntityAdded -= OnAliveEnemyChanged;
-            _aliveEnemies.OnEntityRemoved -= OnAliveEnemyChanged;
+            _chooseTowerPanelPresenter.ButtonClicked -= OnChooseTowerButtonClicked;
+            _chooseTowerPanelPresenter.Enabled -= OnChooseTowerPanelEnabled;
+            _towerMergePanelPresenter.Closed -= OnTowerMergePanelClosed;
+            _playerAbilityPanelPresenter.RequestToOpenAbilityPanel -= OnRequestToOpenAbilityPanel;
+            _towerSwapAbilityPanelPresenter.SwapDisabled -= OnSwapDisabled;
 
-            foreach (var human in _humans)
+            Hide();
+
+            _chooseTowerPanelPresenter.Disable();
+            _towerMergePanelPresenter.Disable();
+            _timerPanelPresenter.Disable();
+            _playerPanelPresenter.Disable();
+            _playerAbilityPanelPresenter.Disable();
+            _cheatsPanelPresenter.Disable();
+            _infoPanelPresenter.Disable();
+            _towerSwapAbilityPanelPresenter.Disable();
+            _pausePanelPresenter.Disable();
+            _finishPanelPresenter.Disable();
+            _objectInfoPanelPresenter.Disable();
+        }
+
+        private void OnSwapDisabled()
+        {
+            _towerSwapAbilityPanelPresenter.Hide();
+            _playerAbilityPanelPresenter.DeactivateOutline(AbilityEnum.SwapTowers);
+        }
+
+        private void OnRequestToOpenAbilityPanel(AbilityEnum playerAbility)
+        {
+            switch (playerAbility)
             {
-                human.RemoveTotalGameTimeListener(this);
-                human.RemoveRoundListener(this);
-                human.RemoveRoundTimerListener(this);
-            }
+                case AbilityEnum.SwapTowers:
+                    _towerSwapAbilityPanelPresenter.Show();
+                    break;
+                
+                case AbilityEnum.HealThrone:
+                case AbilityEnum.TimeLapse:
+                    break;
 
-            View.gameObject.SetActive(false);
-        }
-
-        public void OnRound(GameEntity entity, int value)
-        {
-            View.CurrentRound.text = $"{value}";
-        }
-
-        public void OnCurrentHealthPoints(GameEntity entity, float value)
-        {
-            float maxHp = _staticDataService.ProjectConfig.MaxThroneHealthPoint;
-            float normalized = value / maxHp;
-
-            View.HealthBar.value = normalized;
-            View.HealthText.text =
-                $"{Mathf.RoundToInt(normalized * _staticDataService.ProjectConfig.MaxThroneHealthPoint)}%";
-        }
-
-        private void OnSpiritAdded(IGroup<GameEntity> group, GameEntity entity, int index, IComponent component)
-        {
-            UpdateButtons();
-        }
-
-        private void OnSpiritRemoved(IGroup<GameEntity> group, GameEntity entity, int index, IComponent component)
-        {
-            UpdateButtons();
-        }
-
-        private void OnHumanAdded(IGroup<GameEntity> group, GameEntity entity, int index, IComponent component)
-        {
-            entity.AddCurrentHealthPointsListener(this);
-
-            if (entity.hasCurrentHealthPoints)
-                OnCurrentHealthPoints(entity, entity.CurrentHealthPoints);
-        }
-
-        private void UpdateButtons()
-        {
-            var visibleSpirits = GetVisibleSpirits();
-
-            for (int i = 0; i < View.TowerButtons.Length; i++)
-            {
-                bool active = i < visibleSpirits.Count;
-                View.TowerButtons[i].gameObject.SetActive(active);
-                View.TowerButtons[i].onClick.RemoveAllListeners();
-
-                if (!active)
-                    continue;
-
-                GameEntity spirit = visibleSpirits[i];
-                View.TowerButtonsTexts[i].text = spirit.TowerEnum.ToString(); 
-                View.buttonsImages[i].color = _staticDataService.GetTowerConfig(spirit.TowerEnum).Color;
-                View.TowerButtons[i].onClick.AddListener(() => spirit.isChosen = true);
-            }
-        }
-
-        private List<GameEntity> GetVisibleSpirits()
-        {
-            _result.Clear();
-
-            foreach (var human in _humans)
-            foreach (var spirit in _spirits)
-            {
-                if (spirit.PlayerId == human.Id)
-                    _result.Add(spirit);
-
-                if (_result.Count >= _staticDataService.ProjectConfig.TowersPerRound)
+                case AbilityEnum.Unknown:
+                default:
+                    Debug.Log("Абилки нет.");
                     break;
             }
-
-            return _result;
         }
 
-        public void OnTotalGameTime(GameEntity entity, float value)
+        private void OnChooseTowerButtonClicked(GameEntity spirit)
         {
-            int seconds = Mathf.FloorToInt(value);
-            int hours = seconds / 3600;
-            int minutes = (seconds % 3600) / 60;
-            int secs = seconds % 60;
+            _towerMergePanelPresenter.Activate(spirit);
+            _towerMergePanelPresenter.Show();
+        }
 
-            View.TotalGameTimeText.text = $"{hours:D2}:{minutes:D2}:{secs:D2}";
+        private void OnChooseTowerPanelEnabled()
+        {
+            _towerMergePanelPresenter.Hide();
+        }
+
+        private void OnTowerMergePanelClosed()
+        {
+            _chooseTowerPanelPresenter.Show();
         }
     }
 }

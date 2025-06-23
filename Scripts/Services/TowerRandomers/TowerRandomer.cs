@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game.Towers;
+using NUnit.Framework;
 using Services.Randoms;
 using Services.StaticData;
 
@@ -20,7 +21,7 @@ namespace Services.TowerRandomers
             _config = config;
         }
 
-        public TowerEnum GetTowerType(int playerLevel)
+        public TowerEnum GetTowerEnum(int playerLevel)
         {
             if (playerLevel < 1)
                 throw new Exception("Invalid player level");
@@ -28,7 +29,7 @@ namespace Services.TowerRandomers
             if (playerLevel > _config.ProjectConfig.MaxPlayerLevel)
                 throw new Exception("Invalid player level");
 
-            List<int> distribution = _config.ProjectConfig.Chances[playerLevel]; 
+            List<int> distribution = _config.ProjectConfig.Chances[playerLevel];
 
             int rand = _randomService.Range(0, 100);
 

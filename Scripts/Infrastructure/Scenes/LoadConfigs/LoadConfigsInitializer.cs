@@ -20,7 +20,7 @@ namespace Infrastructure.Scenes.LoadConfigs
 
         public void Initialize()
         {
-            _audioService.Init();
+            //_audioService.Init();
             //      _sceneLoader.Load(SceneId.LoadProgress);
         }
     }

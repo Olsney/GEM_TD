@@ -33,13 +33,13 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public Game.TargetCollection.LayerMaskComponent layerMask { get { return (Game.TargetCollection.LayerMaskComponent)GetComponent(GameComponentsLookup.LayerMask); } }
+    public Game.Battle.LayerMaskComponent layerMask { get { return (Game.Battle.LayerMaskComponent)GetComponent(GameComponentsLookup.LayerMask); } }
     public int LayerMask { get { return layerMask.Value; } }
     public bool hasLayerMask { get { return HasComponent(GameComponentsLookup.LayerMask); } }
 
     public GameEntity AddLayerMask(int newValue) {
         var index = GameComponentsLookup.LayerMask;
-        var component = (Game.TargetCollection.LayerMaskComponent)CreateComponent(index, typeof(Game.TargetCollection.LayerMaskComponent));
+        var component = (Game.Battle.LayerMaskComponent)CreateComponent(index, typeof(Game.Battle.LayerMaskComponent));
         component.Value = newValue;
         AddComponent(index, component);
         return this;
@@ -47,7 +47,7 @@ public partial class GameEntity {
 
     public GameEntity ReplaceLayerMask(int newValue) {
         var index = GameComponentsLookup.LayerMask;
-        var component = (Game.TargetCollection.LayerMaskComponent)CreateComponent(index, typeof(Game.TargetCollection.LayerMaskComponent));
+        var component = (Game.Battle.LayerMaskComponent)CreateComponent(index, typeof(Game.Battle.LayerMaskComponent));
         component.Value = newValue;
         ReplaceComponent(index, component);
         return this;

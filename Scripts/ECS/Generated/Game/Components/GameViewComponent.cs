@@ -34,10 +34,10 @@ public sealed partial class GameMatcher {
 public partial class GameEntity {
 
     public Game.CommonComponents.ViewComponent view { get { return (Game.CommonComponents.ViewComponent)GetComponent(GameComponentsLookup.View); } }
-    public Game.View.IGameEntityView View { get { return view.Value; } }
+    public Game.IGameEntityView View { get { return view.Value; } }
     public bool hasView { get { return HasComponent(GameComponentsLookup.View); } }
 
-    public GameEntity AddView(Game.View.IGameEntityView newValue) {
+    public GameEntity AddView(Game.IGameEntityView newValue) {
         var index = GameComponentsLookup.View;
         var component = (Game.CommonComponents.ViewComponent)CreateComponent(index, typeof(Game.CommonComponents.ViewComponent));
         component.Value = newValue;
@@ -45,7 +45,7 @@ public partial class GameEntity {
         return this;
     }
 
-    public GameEntity ReplaceView(Game.View.IGameEntityView newValue) {
+    public GameEntity ReplaceView(Game.IGameEntityView newValue) {
         var index = GameComponentsLookup.View;
         var component = (Game.CommonComponents.ViewComponent)CreateComponent(index, typeof(Game.CommonComponents.ViewComponent));
         component.Value = newValue;

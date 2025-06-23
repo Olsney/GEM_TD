@@ -24,7 +24,8 @@ namespace Game.GameMainFeature
             _players = gameContext.GetGroup(
                 GameMatcher.AllOf(
                     GameMatcher.Round,
-                    GameMatcher.Player
+                    GameMatcher.Player,
+                    GameMatcher.Level
                 ));
         }
 
@@ -37,17 +38,17 @@ namespace Game.GameMainFeature
                 if (player.Round <= mainEntity.Round)
                     continue;
 
-                // Обновляем текущий раунд в main entity
                 mainEntity.ReplaceRound(player.Round);
 
                 foreach (GameEntity player2 in _players)
                 {
-                    // Удаляем RoundTimer перед началом нового раунда
                     if (player2.hasRoundTimer)
                         player2.RemoveRoundTimer();
 
-                    // Создаём RoundComplete сущность
-                    int maxEnemies = _staticDataService.ProjectConfig.EnemiesPerRound;
+                    int maxEnemies = mainEntity.Round % 10 == 0
+                        ? 1
+                        : _staticDataService.ProjectConfig.EnemiesPerRound;
+
                     _factories.CreateRoundComplete(player2.Id, mainEntity.Round, maxEnemies);
                 }
             }

@@ -2,7 +2,7 @@
 using UnityEngine;
 using Zenject;
 
-namespace Game.View.Factory
+namespace Game.Factory
 {
     public class GameEntityViewFactory : IGameEntityViewFactory
     {

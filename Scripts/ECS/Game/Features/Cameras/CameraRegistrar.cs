@@ -1,4 +1,4 @@
-using Game.View.Registrars;
+using Game.Registrars;
 using Unity.Cinemachine;
 using UnityEngine;
 using Zenject;
@@ -31,6 +31,7 @@ namespace Game.Cameras
             Entity.AddCameraStartPosition(_transform.position);
             Entity.AddCameraBounds(new CameraBoundsData());
             Entity.AddRay(default);
+            Entity.AddZoomState(transform.position.y);
         }
 
         public override void UnregisterComponents()
@@ -55,6 +56,9 @@ namespace Game.Cameras
 
             if (Entity.hasCameraBounds)
                 Entity.RemoveCameraBounds();
+
+            if (Entity.hasZoomState)
+                Entity.RemoveZoomState();
 
             // if (Entity.isCamera)
             //     Entity.isCamera = false;

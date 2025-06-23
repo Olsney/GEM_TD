@@ -10,14 +10,14 @@ namespace Infrastructure.States.GameStates
         private readonly ISystemFactory _systems;
         private readonly GameContext _gameContext;
         private readonly GameplayHeadsUpDisplayPresenter _gameplayHeadsUpDisplayPresenter;
-        
+
         private GameplayFeature _gameplayFeature;
 
         public BattleLoopState(
             ISystemFactory systems,
-            GameContext gameContext, 
+            GameContext gameContext,
             GameplayHeadsUpDisplayPresenter gameplayHeadsUpDisplayPresenter
-            )
+        )
         {
             _systems = systems;
             _gameContext = gameContext;
@@ -28,7 +28,7 @@ namespace Infrastructure.States.GameStates
         {
             _gameplayFeature = _systems.Create<GameplayFeature>();
             _gameplayFeature.Initialize();
-            
+
             _gameplayHeadsUpDisplayPresenter.Enable();
         }
 
@@ -52,7 +52,7 @@ namespace Infrastructure.States.GameStates
             _gameplayFeature.Cleanup();
             _gameplayFeature.TearDown();
             _gameplayFeature = null;
-            
+
             _gameplayHeadsUpDisplayPresenter.Disable();
         }
 

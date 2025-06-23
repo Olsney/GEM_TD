@@ -1,6 +1,7 @@
 ﻿using Game.Battle;
-using Game.View;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Game.Enemies
@@ -10,12 +11,21 @@ namespace Game.Enemies
         [ExecuteInEditMode]
         public class ArmorBreakGizmo : MonoBehaviour
         {
+#if UNITY_EDITOR
+
             public GameEntityView EntityView;
 
-            [SerializeField] private Vector3 offset = new Vector3(0, 2.5f, 0);
-            [SerializeField] private Color shieldColor = Color.blue; // яркий щит
-            [SerializeField] private Color textColor = Color.white;
-            [SerializeField] private Vector2 shieldSize = new Vector2(0.8f, 0.8f);
+            [SerializeField]
+            private Vector3 offset = new Vector3(0, 2.5f, 0);
+
+            [SerializeField]
+            private Color shieldColor = Color.blue; // яркий щит
+
+            [SerializeField]
+            private Color textColor = Color.white;
+
+            [SerializeField]
+            private Vector2 shieldSize = new Vector2(0.8f, 0.8f);
 
             private void OnDrawGizmos()
             {
@@ -28,10 +38,12 @@ namespace Game.Enemies
                     return;
 
                 float baseArmor = entity.BaseStats.ContainsKey(StatEnum.Armor)
-                    ? entity.BaseStats[StatEnum.Armor] : 0f;
+                    ? entity.BaseStats[StatEnum.Armor]
+                    : 0f;
 
                 float modifier = entity.StatModifiers.ContainsKey(StatEnum.Armor)
-                    ? entity.StatModifiers[StatEnum.Armor] : 0f;
+                    ? entity.StatModifiers[StatEnum.Armor]
+                    : 0f;
 
                 if (modifier >= 0)
                     return; // броня не снижена — не показываем
@@ -68,6 +80,7 @@ namespace Game.Enemies
                 }
                 Handles.EndGUI();
             }
+#endif
         }
     }
 }

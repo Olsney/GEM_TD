@@ -1,10 +1,10 @@
 ﻿using Entitas.Unity;
-using Game.View.Registrars;
+using Game.Registrars;
 using Services.Collisions;
 using UnityEngine;
 using Zenject;
 
-namespace Game.View
+namespace Game
 {
     [SelectionBase]
     public class GameEntityView : MonoBehaviour, IGameEntityView

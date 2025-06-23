@@ -1,14 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Game.View
+namespace Game
 {
     public abstract class EntityDependant : MonoBehaviour
     {
-        [FormerlySerializedAs("GameGameEntityBinder")]
-        [FormerlySerializedAs("GameEntityBinder")]
-        [FormerlySerializedAs("EntityBinder")]
-        [FormerlySerializedAs("EntityView")]
         public GameEntityView GameEntityView;
 
         protected GameEntity Entity => GameEntityView != null

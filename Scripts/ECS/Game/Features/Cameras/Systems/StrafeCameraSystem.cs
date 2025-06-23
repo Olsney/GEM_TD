@@ -39,16 +39,16 @@ namespace Game.Cameras
                 Vector3 cameraMove = Vector3.zero;
 
                 if (Input.mousePosition.x <= edgeThickness)
-                    cameraMove.x = -strafeSpeed * _time.DeltaTime;
+                    cameraMove.x = -strafeSpeed * Time.deltaTime;
 
                 if (Input.mousePosition.x >= Screen.width - edgeThickness)
-                    cameraMove.x = strafeSpeed * _time.DeltaTime;
+                    cameraMove.x = strafeSpeed * Time.deltaTime;
 
                 if (Input.mousePosition.y <= edgeThickness)
-                    cameraMove.z = -strafeSpeed * _time.DeltaTime;
+                    cameraMove.z = -strafeSpeed * Time.deltaTime;
 
                 if (Input.mousePosition.y >= Screen.height - edgeThickness)
-                    cameraMove.z = strafeSpeed * _time.DeltaTime;
+                    cameraMove.z = strafeSpeed * Time.deltaTime;
 
                 camera.CameraTarget.Translate(cameraMove, Space.World);
             }

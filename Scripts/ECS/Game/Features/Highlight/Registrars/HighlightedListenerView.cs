@@ -1,5 +1,4 @@
-﻿using Game.View;
-using HighlightPlus;
+﻿using HighlightPlus;
 using UnityEngine;
 
 namespace Game.Highlight

@@ -6,9 +6,6 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
-using Game.Battle.CleaveAbility.Comps;
-
 public sealed partial class GameMatcher {
 
     static Entitas.IMatcher<GameEntity> _matcherReadyToCleave;
@@ -36,7 +33,7 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly ReadyToCleaveComponent readyToCleaveComponent = new ReadyToCleaveComponent();
+    static readonly Game.Battle.CleaveAbility.Comps.ReadyToCleaveComponent readyToCleaveComponent = new Game.Battle.CleaveAbility.Comps.ReadyToCleaveComponent();
 
     public bool isReadyToCleave {
         get { return HasComponent(GameComponentsLookup.ReadyToCleave); }

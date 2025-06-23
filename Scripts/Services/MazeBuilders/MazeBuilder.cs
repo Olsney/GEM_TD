@@ -1,6 +1,7 @@
 ﻿using System;
 using Game.Maze;
 using Services.AssetProviders;
+using Services.ViewContainerProviders;
 using Tools.MazeDesigner;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -11,14 +12,17 @@ namespace Services.MazeBuilders
     {
         private readonly GameEntityFactories _factories;
         private readonly IAssetProvider _assetProvider;
+        private readonly ViewContainerProvider _viewContainerProvider;
 
         public MazeBuilder(
             GameEntityFactories factories,
-            IAssetProvider assetProvider
+            IAssetProvider assetProvider,
+            ViewContainerProvider viewContainerProvider
         )
         {
             _factories = factories;
             _assetProvider = assetProvider;
+            _viewContainerProvider = viewContainerProvider;
         }
 
         public void Build(
@@ -97,7 +101,12 @@ namespace Services.MazeBuilders
                 _ => throw new ArgumentOutOfRangeException(nameof(blockEnum), blockEnum, null)
             };
 
-            Object.Instantiate(prefab, new Vector3(worldX, 0, worldZ), Quaternion.identity);
+            Object.Instantiate(
+                prefab,
+                new Vector3(worldX, 0, worldZ),
+                Quaternion.identity,
+                _viewContainerProvider.BlockContainer
+            );
         }
     }
 }

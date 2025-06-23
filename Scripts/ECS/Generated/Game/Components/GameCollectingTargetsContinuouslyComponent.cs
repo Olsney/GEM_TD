@@ -33,7 +33,7 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly Game.TargetCollection.CollectingTargetsContinuouslyComponent collectingTargetsContinuouslyComponent = new Game.TargetCollection.CollectingTargetsContinuouslyComponent();
+    static readonly Game.Battle.CollectingTargetsContinuouslyComponent collectingTargetsContinuouslyComponent = new Game.Battle.CollectingTargetsContinuouslyComponent();
 
     public bool isCollectingTargetsContinuously {
         get { return HasComponent(GameComponentsLookup.CollectingTargetsContinuously); }

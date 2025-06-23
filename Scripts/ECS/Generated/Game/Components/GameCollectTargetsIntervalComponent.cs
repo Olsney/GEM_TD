@@ -33,13 +33,13 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    public Game.TargetCollection.CollectTargetsIntervalComponent collectTargetsInterval { get { return (Game.TargetCollection.CollectTargetsIntervalComponent)GetComponent(GameComponentsLookup.CollectTargetsInterval); } }
+    public Game.Battle.CollectTargetsIntervalComponent collectTargetsInterval { get { return (Game.Battle.CollectTargetsIntervalComponent)GetComponent(GameComponentsLookup.CollectTargetsInterval); } }
     public float CollectTargetsInterval { get { return collectTargetsInterval.Value; } }
     public bool hasCollectTargetsInterval { get { return HasComponent(GameComponentsLookup.CollectTargetsInterval); } }
 
     public GameEntity AddCollectTargetsInterval(float newValue) {
         var index = GameComponentsLookup.CollectTargetsInterval;
-        var component = (Game.TargetCollection.CollectTargetsIntervalComponent)CreateComponent(index, typeof(Game.TargetCollection.CollectTargetsIntervalComponent));
+        var component = (Game.Battle.CollectTargetsIntervalComponent)CreateComponent(index, typeof(Game.Battle.CollectTargetsIntervalComponent));
         component.Value = newValue;
         AddComponent(index, component);
         return this;
@@ -47,7 +47,7 @@ public partial class GameEntity {
 
     public GameEntity ReplaceCollectTargetsInterval(float newValue) {
         var index = GameComponentsLookup.CollectTargetsInterval;
-        var component = (Game.TargetCollection.CollectTargetsIntervalComponent)CreateComponent(index, typeof(Game.TargetCollection.CollectTargetsIntervalComponent));
+        var component = (Game.Battle.CollectTargetsIntervalComponent)CreateComponent(index, typeof(Game.Battle.CollectTargetsIntervalComponent));
         component.Value = newValue;
         ReplaceComponent(index, component);
         return this;

@@ -36,9 +36,11 @@ namespace Game.GameMainFeature
         {
             GameEntity spawner = _game.gameMainEntity;
 
-            int enemiesPerRound = _staticDataService.ProjectConfig.EnemiesPerRound;
-            
-            if (spawner.EnemySpawned >= enemiesPerRound * spawner.Round)
+            int baseEnemies = _staticDataService.ProjectConfig.EnemiesPerRound;
+            int bossRoundsPassed = spawner.Round / 10;
+            int spawnLimit = baseEnemies * spawner.Round - (baseEnemies - 1) * bossRoundsPassed;
+
+            if (spawner.EnemySpawned >= spawnLimit)
                 return;
             
             bool anyPlayerInBattleState = false;

@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using Game.GameMainFeature;
+using UnityEngine;
 
 namespace Game.Cameras
 {
@@ -14,6 +17,11 @@ namespace Game.Cameras
         [Range(0f, 20f)]
         [field: SerializeField]
         public float ZoomSpeed { get; private set; } = 10f;
+
+        [field: Header("Smoothness of the camera zoom")]
+        [Range(2f, 7f)]
+        [field: SerializeField]
+        public float Damping { get; private set; } = 10f;
 
         [field: Header("Minimum approach distance")]
         [Range(-10f, 5f)]
@@ -44,5 +52,33 @@ namespace Game.Cameras
         [Range(2f, 7f)]
         [field: SerializeField]
         public float OffsetDown { get; private set; } = 4f;
+
+        [SerializeField]
+        private List<MapZoneEntry> zoneBounds = new();
+
+        [Serializable]
+        private class MapZoneEntry
+        {
+            public GameModeEnum zoneType;
+            public CameraBoundsData bounds;
+        }
+
+        private Dictionary<GameModeEnum, CameraBoundsData> boundsDictionary;
+
+        public void Initialize()
+        {
+            boundsDictionary = new Dictionary<GameModeEnum, CameraBoundsData>();
+
+            foreach (var entry in zoneBounds)
+                boundsDictionary[entry.zoneType] = entry.bounds;
+        }
+
+        public CameraBoundsData TryGetBounds(GameModeEnum zoneType)
+        {
+            if (!boundsDictionary.ContainsKey(zoneType))
+                throw new Exception($"Bounds for {zoneType} was not found");
+            
+            return boundsDictionary[zoneType];
+        }
     }
 }

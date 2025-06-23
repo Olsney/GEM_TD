@@ -6,9 +6,6 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-
-using Game.Battle;
-
 public sealed partial class GameMatcher {
 
     static Entitas.IMatcher<GameEntity> _matcherCleaveArmament;
@@ -36,7 +33,7 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly CleaveArmamentComponent cleaveArmamentComponent = new CleaveArmamentComponent();
+    static readonly Game.Battle.CleaveArmamentComponent cleaveArmamentComponent = new Game.Battle.CleaveArmamentComponent();
 
     public bool isCleaveArmament {
         get { return HasComponent(GameComponentsLookup.CleaveArmament); }

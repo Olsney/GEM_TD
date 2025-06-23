@@ -10,35 +10,29 @@ namespace Game.Enemies
     public class SetNextPointMoveSystem : IExecuteSystem
     {
         private readonly GameContext _game;
+
         private readonly IStaticDataService _config;
-        private readonly IGroup<GameEntity> _enemies;
-        private readonly IGroup<GameEntity> _players;
         private readonly IProjectDataService _projectDataService;
 
-        public SetNextPointMoveSystem(
-            GameContext game,
+        private readonly IGroup<GameEntity> _enemies;
+        private readonly IGroup<GameEntity> _players;
+
+        public SetNextPointMoveSystem(GameContext game,
             IStaticDataService config,
-            IProjectDataService projectDataService
-        )
+            IProjectDataService projectDataService)
         {
             _game = game;
             _config = config;
             _projectDataService = projectDataService;
 
-            _enemies = game.GetGroup(
-                GameMatcher
-                    .AllOf(
-                        GameMatcher.WorldPosition,
-                        GameMatcher.Enemy,
-                        GameMatcher.TargetPlaceIndex,
-                        GameMatcher.PathNumber
-                    ));
+            _enemies = game.GetGroup(GameMatcher
+                .AllOf(GameMatcher.WorldPosition,
+                    GameMatcher.Enemy,
+                    GameMatcher.TargetPlaceIndex,
+                    GameMatcher.PathNumber));
 
-            _players = game.GetGroup(
-                GameMatcher.AllOf(
-                    GameMatcher.Player,
-                    GameMatcher.GameLoopStateEnum
-                ));
+            _players = game.GetGroup(GameMatcher.AllOf(GameMatcher.Player,
+                GameMatcher.GameLoopStateEnum));
         }
 
         public void Execute()
@@ -58,38 +52,40 @@ namespace Game.Enemies
                 if (index >= setups.Length)
                     index = setups.Length - 1;
 
-                var roundPathSetup = setups[index];
+                RoundPathSetup roundPathSetup = setups[index];
 
                 Vector2Int[] currentPath = roundPathSetup.GetPathByRoundIndex(enemy.PathNumber);
 
                 int currentIndex = enemy.TargetPlaceIndex;
+
                 Vector2Int currentTarget = currentPath[currentIndex];
 
                 currentTarget.x += (int)_projectDataService.StartPositions[player.Index].x;
                 currentTarget.y += (int)_projectDataService.StartPositions[player.Index].y;
 
                 if (enemy.WorldPosition.SqrDistance(currentTarget) >= _config.ProjectConfig.DistanceToNextPoint)
-                {
-                    if (enemy.WorldPosition.SqrDistance(currentTarget) >= _config.ProjectConfig.DistanceToNextPoint)
-                    {
-                        if (enemy.WorldPosition.SqrDistance(currentTarget) >= _config.ProjectConfig.DistanceToNextPoint)
-                        {
-                            continue;
-                        }
-                    }
-                }
+                    continue;
 
                 if (currentIndex == currentPath.Length - 1)
                     TryAdvanceBlockIndex(enemy, _config.ProjectConfig.TotalCheckPoints);
                 else
-                    AdvanceToNextPoint(enemy, currentIndex);
+                    AdvanceToNextPoint(enemy, currentIndex, currentPath.Length);
             }
         }
 
-        private void AdvanceToNextPoint(GameEntity enemy, int currentIndex)
+        private void AdvanceToNextPoint(GameEntity enemy, int currentIndex, int lengthCurrentPath)
         {
-            int nextIndex = currentIndex + 1;
-            enemy.ReplaceTargetPlaceIndex(nextIndex);
+            if (enemy.isFlyable)
+            {
+                // установить последний TargetPlaceIndex из текущего roundPathSetup.GetPathByRoundIndex
+                enemy.ReplaceTargetPlaceIndex(lengthCurrentPath - 1);
+            }
+            else
+            {
+                int nextIndex = currentIndex + 1;
+
+                enemy.ReplaceTargetPlaceIndex(nextIndex);
+            }
         }
 
         private void TryAdvanceBlockIndex(GameEntity enemy, int directionsCount)
@@ -98,12 +94,12 @@ namespace Game.Enemies
             {
                 if (enemy.CurrentHealthPoints <= 0)
                     return;
-                
+
                 enemy.ReplaceCurrentHealthPoints(0);
-                
+
                 GameEntity player = _game.GetEntityWithId(enemy.PlayerId);
                 player.ReplaceCurrentHealthPoints(player.CurrentHealthPoints - 5);
-                
+
                 return;
             }
 

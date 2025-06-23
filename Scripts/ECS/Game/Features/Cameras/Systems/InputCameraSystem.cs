@@ -1,4 +1,5 @@
 ﻿using Entitas;
+using Services.Cameras;
 using UnityEngine;
 
 namespace Game.Cameras
@@ -6,13 +7,19 @@ namespace Game.Cameras
     public class InputCameraSystem : IExecuteSystem
     {
         private readonly IGroup<GameEntity> _cameras;
+        private readonly ICameraProvider _cameraProvider;
+        private Plane _dragPlane;
+        private Vector3 _dragAnchor;
+        private bool _isDragging;
 
-        public InputCameraSystem(GameContext game)
+        public InputCameraSystem(GameContext game, ICameraProvider cameraProvider)
         {
+            _cameraProvider = cameraProvider;
             _cameras = game.GetGroup(GameMatcher
                 .AllOf(
                     GameMatcher.CameraInput,
-                    GameMatcher.CameraDrag
+                    GameMatcher.CameraDrag,
+                    GameMatcher.CameraTarget
                 ));
         }
 
@@ -23,15 +30,39 @@ namespace Game.Cameras
                 camera.CameraInput.moveX = Input.GetAxis(camera.CameraInput.AxisHorizontal);
                 camera.CameraInput.moveZ = Input.GetAxis(camera.CameraInput.AxisVertical);
                 camera.CameraInput.rotate = Input.GetAxis(camera.CameraInput.AxisRotation);
-                camera.CameraInput.zoom = Input.mouseScrollDelta.y;
+                camera.CameraInput.zoom = Input.mouseScrollDelta.y * 3f;
 
                 camera.ReplaceCameraInput(camera.CameraInput);
 
-                if (Input.GetMouseButton(2)) //TODO: input service
+                if (Input.GetMouseButtonDown(2))
                 {
-                    Vector3 mouseDelta = new Vector3(Input.GetAxis(camera.CameraInput.AxisMouseX), 0,
-                        Input.GetAxis(camera.CameraInput.AxisMouseY));
-                    camera.ReplaceCameraDrag(mouseDelta);
+                    _dragPlane = new Plane(Vector3.up, Vector3.zero);
+                    Ray ray = _cameraProvider.Camera.ScreenPointToRay(Input.mousePosition);
+                    if (_dragPlane.Raycast(ray, out float enter))
+                    {
+                        _dragAnchor = ray.GetPoint(enter);
+                        _isDragging = true;
+                    }
+                }
+
+                if (Input.GetMouseButton(2) && _isDragging)
+                {
+                    Ray ray = _cameraProvider.Camera.ScreenPointToRay(Input.mousePosition);
+                    if (_dragPlane.Raycast(ray, out float enter))
+                    {
+                        Vector3 currentPoint = ray.GetPoint(enter);
+                        Vector3 delta = _dragAnchor - currentPoint;
+                        camera.ReplaceCameraDrag(delta);
+                    }
+                }
+                else
+                {
+                    camera.ReplaceCameraDrag(Vector3.zero);
+                }
+
+                if (Input.GetMouseButtonUp(2))
+                {
+                    _isDragging = false;
                 }
             }
         }

@@ -6,6 +6,6 @@ namespace Game.Towers
     [Game]
     public class ShootingPointWorldPositionComponent : IComponent
     {
-        public Vector3 Value;
+        public Transform Value;
     }
 }

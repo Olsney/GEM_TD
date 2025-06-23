@@ -34,10 +34,10 @@ public sealed partial class GameMatcher {
 public partial class GameEntity {
 
     public Game.Towers.ShootingPointWorldPositionComponent shootingPointWorldPosition { get { return (Game.Towers.ShootingPointWorldPositionComponent)GetComponent(GameComponentsLookup.ShootingPointWorldPosition); } }
-    public UnityEngine.Vector3 ShootingPointWorldPosition { get { return shootingPointWorldPosition.Value; } }
+    public UnityEngine.Transform ShootingPointWorldPosition { get { return shootingPointWorldPosition.Value; } }
     public bool hasShootingPointWorldPosition { get { return HasComponent(GameComponentsLookup.ShootingPointWorldPosition); } }
 
-    public GameEntity AddShootingPointWorldPosition(UnityEngine.Vector3 newValue) {
+    public GameEntity AddShootingPointWorldPosition(UnityEngine.Transform newValue) {
         var index = GameComponentsLookup.ShootingPointWorldPosition;
         var component = (Game.Towers.ShootingPointWorldPositionComponent)CreateComponent(index, typeof(Game.Towers.ShootingPointWorldPositionComponent));
         component.Value = newValue;
@@ -45,7 +45,7 @@ public partial class GameEntity {
         return this;
     }
 
-    public GameEntity ReplaceShootingPointWorldPosition(UnityEngine.Vector3 newValue) {
+    public GameEntity ReplaceShootingPointWorldPosition(UnityEngine.Transform newValue) {
         var index = GameComponentsLookup.ShootingPointWorldPosition;
         var component = (Game.Towers.ShootingPointWorldPositionComponent)CreateComponent(index, typeof(Game.Towers.ShootingPointWorldPositionComponent));
         component.Value = newValue;

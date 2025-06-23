@@ -20,21 +20,33 @@ namespace Game.Cameras
             _cameras = game.GetGroup(GameMatcher
                 .AllOf(
                     GameMatcher.CameraTarget,
-                    GameMatcher.CameraInput
+                    GameMatcher.CameraInput,
+                    GameMatcher.CameraBounds
                     ));
         }
 
         public void Execute()
         {
             var moveSpeed = _service.ProjectConfig.CameraConfig.MoveSpeed;
+            var boundsDamping = _service.ProjectConfig.CameraConfig.Damping;
 
             foreach (GameEntity camera in _cameras)
             {
                 Transform target = camera.CameraTarget;
-                var input = camera.CameraInput;
-
+                var input = camera.cameraInput.Value;
+                var bounds = camera.cameraBounds.Value;
+                
                 Vector3 moveDirection = new Vector3(input.moveX, 0, input.moveZ).normalized;
-                target.Translate(moveDirection * moveSpeed * _time.DeltaTime, Space.World);
+                target.Translate(moveDirection * moveSpeed * Time.deltaTime, Space.World);
+                Vector3 currentPosition = target.position;
+
+                Vector3 clampedPosition = new Vector3(
+                    Mathf.Clamp(currentPosition.x, bounds.minWidth, bounds.maxWidth),
+                    currentPosition.y,
+                    Mathf.Clamp(currentPosition.z, bounds.minHeight, bounds.maxHeight)
+                );
+                
+                target.position = Vector3.Lerp(currentPosition, clampedPosition, Time.deltaTime * boundsDamping); //PullRequest!
             }
         }
     }

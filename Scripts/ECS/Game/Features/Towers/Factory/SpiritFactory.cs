@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.Battle;
 using Game.Battle.Configs;
 using Game.Battle.Factory;
 using Game.Entity;
 using Game.Extensions;
-using Game.View;
 using Services.AssetProviders;
 using Services.Identifiers;
 using Services.StaticData;
@@ -42,22 +42,30 @@ namespace Game.Towers
             int playerId
         )
         {
+            TowerConfig config = _staticDataService.GetTowerConfig(towerEnum);
+
             Dictionary<StatEnum, float> baseStats = InitStats.EmptyStatDictionary()
-                .With(x => x[StatEnum.AttackCooldown] = 0.5f)
-                .With(x => x[StatEnum.AttackRange] = 5f)
-                .With(x => x[StatEnum.AttackTimer] = 4f);
+                    .With(x => x[StatEnum.AttackCooldown] = 0.5f)
+                    .With(x => x[StatEnum.AttackRange] = 5f)
+                    .With(x => x[StatEnum.AttackTimer] = 4f)
+                    .With(x => x[StatEnum.BasicAttackAdditionalProjectiles] = 1f)
+                    .With(x => x[StatEnum.AttackSpeed] = config.BasicAttackSetup.ProjectileSetup.MoveSpeed)
+                ;
 
             int id = _identifiers.Next();
 
-            TowerConfig config = _staticDataService.GetTowerConfig(towerEnum);
-            GameEntity basicAttackAbility = _abilityFactory.CreateAbility(id, config.BasicAttackSetup, playerId);
+            GameEntity basicAttackAbility =
+                _abilityFactory.CreateBasicTowerAbility(id, config.BasicAttackSetup, playerId);
 
             List<AbilitySetup> abilitySetups = config.Abilities;
+
+            string path = towerEnum.ToString();
+            path = path.Substring(0, path.Length - 1);
 
             GameEntity spirit = CreateGameEntity
                     .Empty()
                     .AddId(id)
-                    .AddPrefab(_assets.LoadAsset(towerEnum.ToString()).GetComponent<GameEntityView>())
+                    .AddPrefab(_assets.LoadAsset(path).GetComponent<GameEntityView>())
                     .AddStatModifiers(InitStats.EmptyStatDictionary())
                     .AddBaseStats(baseStats)
                     .AddWorldPosition(new Vector3(worldPosX, 0, worldPosZ))
@@ -67,19 +75,60 @@ namespace Game.Towers
                     .AddAttackCooldown(baseStats[StatEnum.AttackCooldown])
                     .AddAttackRange(baseStats[StatEnum.AttackRange])
                     .AddAttackTimer(baseStats[StatEnum.AttackTimer])
-                    .AddRotation(Quaternion.Euler(Vector3.zero))
+                    .AddAttackSpeedStat(baseStats[StatEnum.AttackSpeed])
+                    .AddRotation(Quaternion.Euler(new Vector3(0, 180, 0)))
                     .AddPlayerId(playerId)
                     .AddBasicAbilityId(basicAttackAbility.Id)
-                    .AddAbilities(new List<GameEntity>())
-                    .AddAbilityComponent(config.BasicAttackSetup.AbilityEnum)
+                    .AddAbilities(new List<int>())
+                    .AddProjectilesCountStat(0)
+                    .AddMergeVariants(new List<TowerEnum>())
+                    .AddLevel(_staticDataService.ProjectConfig.TowerLevels[towerEnum])
+              //      .AddAbilityComponent(config.BasicAttackSetup.AbilityEnum) // TODO: STARINA S`EBI NAHOOI OTSUDA!
                     .With(x => x.isCanRaycast = true)
                     .With(x => x.isTowerSpirit = true)
+                    .With(x => x.isTower = true)
+                    .With(x => x.isCollectingMergeVariants = true)
+                    .With(x => x.isSwapable = true)
                 ;
 
             foreach (AbilitySetup abilitySetup in abilitySetups)
             {
-                spirit.AddAbilityComponent(abilitySetup.AbilityEnum);
-                spirit.Abilities.Add(_abilityFactory.CreateAbility(id, abilitySetup, playerId));
+                switch (abilitySetup.AbilityEnum)
+                {
+                    case AbilityEnum.Slow:
+                        spirit.Abilities.Add(_abilityFactory.CreateSlowAbility(id, abilitySetup, playerId).Id);
+                        break;
+
+                    case AbilityEnum.Pierce:
+                        spirit.Abilities.Add(_abilityFactory.CreatePierceAbility(id, abilitySetup, playerId).Id);
+                        break;
+
+                    case AbilityEnum.Poison:
+                        spirit.Abilities.Add(_abilityFactory.CreatePoisonAbility(id, abilitySetup, playerId).Id);
+                        break;
+
+                    case AbilityEnum.Speed:
+                        spirit.Abilities.Add(_abilityFactory.CreateSpeedAbility(id, abilitySetup, playerId).Id);
+                        break;
+
+                    case AbilityEnum.Aura:
+                        spirit.Abilities.Add(_abilityFactory.CreateAuraAbility(id, abilitySetup, playerId).Id);
+                        break;
+
+                    case AbilityEnum.Cleave:
+                        spirit.Abilities.Add(_abilityFactory.CreateCleaveAbility(id, abilitySetup, playerId).Id);
+                        break;
+
+                    case AbilityEnum.Split:
+
+                        spirit.Abilities.Add(_abilityFactory.CreateSplitAbility(id, abilitySetup, playerId).Id);
+                        break;
+
+                    case AbilityEnum.Unknown:
+                    case AbilityEnum.BasicAttack:
+                    default:
+                        throw new Exception($"Ability with type id {abilitySetup.AbilityEnum} does not exist");
+                }
             }
 
             return spirit;

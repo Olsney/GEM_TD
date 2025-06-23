@@ -7,11 +7,14 @@ namespace Game.Destruct
     {
         private readonly IGroup<GameEntity> _entities;
 
-        public CleanupGameDestructedViewSystem(GameContext game) =>
+        public CleanupGameDestructedViewSystem(GameContext game)
+        {
             _entities = game.GetGroup(
                 GameMatcher.AllOf(
                     GameMatcher.Destructed,
-                    GameMatcher.View));
+                    GameMatcher.View
+                ));
+        }
 
         public void Cleanup()
         {

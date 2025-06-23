@@ -1,4 +1,4 @@
-﻿using Game.View.Registrars;
+﻿using Game.Registrars;
 using UnityEngine;
 
 namespace Game.Enemies

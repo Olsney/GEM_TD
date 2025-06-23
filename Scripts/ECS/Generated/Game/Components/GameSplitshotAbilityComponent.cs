@@ -8,17 +8,17 @@
 //------------------------------------------------------------------------------
 public sealed partial class GameMatcher {
 
-    static Entitas.IMatcher<GameEntity> _matcherSplitshotAbility;
+    static Entitas.IMatcher<GameEntity> _matcherSplitShotAbility;
 
-    public static Entitas.IMatcher<GameEntity> SplitshotAbility {
+    public static Entitas.IMatcher<GameEntity> SplitShotAbility {
         get {
-            if (_matcherSplitshotAbility == null) {
-                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.SplitshotAbility);
+            if (_matcherSplitShotAbility == null) {
+                var matcher = (Entitas.Matcher<GameEntity>)Entitas.Matcher<GameEntity>.AllOf(GameComponentsLookup.SplitShotAbility);
                 matcher.componentNames = GameComponentsLookup.componentNames;
-                _matcherSplitshotAbility = matcher;
+                _matcherSplitShotAbility = matcher;
             }
 
-            return _matcherSplitshotAbility;
+            return _matcherSplitShotAbility;
         }
     }
 }
@@ -33,18 +33,18 @@ public sealed partial class GameMatcher {
 //------------------------------------------------------------------------------
 public partial class GameEntity {
 
-    static readonly Game.Battle.SplitShot.SplitshotAbilityComponent splitshotAbilityComponent = new Game.Battle.SplitShot.SplitshotAbilityComponent();
+    static readonly Game.Battle.SplitShot.SplitShotAbilityComponent splitShotAbilityComponent = new Game.Battle.SplitShot.SplitShotAbilityComponent();
 
-    public bool isSplitshotAbility {
-        get { return HasComponent(GameComponentsLookup.SplitshotAbility); }
+    public bool isSplitShotAbility {
+        get { return HasComponent(GameComponentsLookup.SplitShotAbility); }
         set {
-            if (value != isSplitshotAbility) {
-                var index = GameComponentsLookup.SplitshotAbility;
+            if (value != isSplitShotAbility) {
+                var index = GameComponentsLookup.SplitShotAbility;
                 if (value) {
                     var componentPool = GetComponentPool(index);
                     var component = componentPool.Count > 0
                             ? componentPool.Pop()
-                            : splitshotAbilityComponent;
+                            : splitShotAbilityComponent;
 
                     AddComponent(index, component);
                 } else {

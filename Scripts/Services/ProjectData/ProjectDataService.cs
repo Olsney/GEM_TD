@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Game.GameMainFeature;
 using Services.StaticData;
 using Tools.MazeDesigner;
@@ -18,6 +19,13 @@ namespace Services.ProjectData
         public List<Vector2> StartPositions { get; } = new();
         public MazeDataSO CurrentMazeData { get; private set; }
 
+        public GameModeEnum CurrentGameModeType { get; private set; }
+
+        public void SetMazePlan(MazeDataSO mazeData)
+        {
+            _config.ProjectConfig.CurrentMaze = mazeData;
+        }
+        
         public void SetGameMode(GameModeEnum gameModeEnum)
         {
             int centerOffset = 1;
@@ -26,16 +34,20 @@ namespace Services.ProjectData
             switch (gameModeEnum)
             {
                 case GameModeEnum.SingleSmall:
-                    CurrentMazeData = _config.ProjectConfig.SmallMazeData;
+                   CurrentMazeData = _config.ProjectConfig.CurrentMaze;
+                   // 8 типов карт. 
+                    // CurrentMazeData = _config.GetMazeDataConfigs(gameModeEnum);
 
                     mazeLength = CurrentMazeData.Height;
 
                     StartPositions.Add(new Vector2(-mazeLength + 1 - centerOffset, centerOffset));
-
+                    
                     break;
 
                 case GameModeEnum.RaceSmall:
-                    CurrentMazeData = _config.ProjectConfig.SmallMazeData;
+                    centerOffset = 3;
+                    //CurrentMazeData = _config.ProjectConfig.SmallMazeData;
+                    CurrentMazeData = _config.ProjectConfig.CurrentMaze;
                     mazeLength = CurrentMazeData.Height;
 
                     StartPositions.Add(new Vector2(-mazeLength + 1 - centerOffset, centerOffset));
@@ -46,14 +58,20 @@ namespace Services.ProjectData
                     break;
 
                 case GameModeEnum.SingleLarge:
-                    CurrentMazeData = _config.ProjectConfig.BigMazeData;
+                    // CurrentMazeData = _config.ProjectConfig.BigMazeData;
+                    CurrentMazeData = _config.ProjectConfig.CurrentMaze;
 
                     mazeLength = CurrentMazeData.Height;
 
                     StartPositions.Add(new Vector2(-mazeLength + 1 - centerOffset, centerOffset));
 
                     break;
+                
+                default:
+                    throw new Exception("This GameModeEnum doesnt exist. Map cannot generated");
             }
+
+            CurrentGameModeType = gameModeEnum;
         }
 
         public void ResetGameModes()

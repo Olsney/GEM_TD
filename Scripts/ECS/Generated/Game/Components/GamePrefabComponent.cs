@@ -34,10 +34,10 @@ public sealed partial class GameMatcher {
 public partial class GameEntity {
 
     public Game.CommonComponents.PrefabComponent prefab { get { return (Game.CommonComponents.PrefabComponent)GetComponent(GameComponentsLookup.Prefab); } }
-    public Game.View.GameEntityView Prefab { get { return prefab.Value; } }
+    public Game.GameEntityView Prefab { get { return prefab.Value; } }
     public bool hasPrefab { get { return HasComponent(GameComponentsLookup.Prefab); } }
 
-    public GameEntity AddPrefab(Game.View.GameEntityView newValue) {
+    public GameEntity AddPrefab(Game.GameEntityView newValue) {
         var index = GameComponentsLookup.Prefab;
         var component = (Game.CommonComponents.PrefabComponent)CreateComponent(index, typeof(Game.CommonComponents.PrefabComponent));
         component.Value = newValue;
@@ -45,7 +45,7 @@ public partial class GameEntity {
         return this;
     }
 
-    public GameEntity ReplacePrefab(Game.View.GameEntityView newValue) {
+    public GameEntity ReplacePrefab(Game.GameEntityView newValue) {
         var index = GameComponentsLookup.Prefab;
         var component = (Game.CommonComponents.PrefabComponent)CreateComponent(index, typeof(Game.CommonComponents.PrefabComponent));
         component.Value = newValue;
