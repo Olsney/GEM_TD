@@ -6,6 +6,13 @@
   </a>
 </p>
 
+<p align="center">
+  <a href="https://olsney.itch.io/dynasty-survivors" target="_blank">
+    🕹️ <strong>Play here on itch.io!</strong>
+  </a><br>
+  <strong style="color: white;">Password: 1337</strong>
+</p>
+
 # 🏰 GemTD
 
 A tower defense game built with **ECS architecture** using the **Entitas** framework in Unity.  
