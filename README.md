@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="https://olsney.itch.io/dynasty-survivors" target="_blank">
+  <a href="https://stoneprophet.itch.io/gemtd" target="_blank">
     🕹️ <strong>Play here on itch.io!</strong>
   </a><br>
   <strong style="color: white;">Password: 1337</strong>
