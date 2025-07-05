@@ -13,7 +13,7 @@
   <strong style="color: white;">Password: 1337</strong>
 </p>
 
-# 🏰 GemTD
+# 🏰 GemTD (Unannounced PC game)
 
 A tower defense game built with **ECS architecture** using the **Entitas** framework in Unity.  
 Developed as a team project to demonstrate modular design, performance, and clean separation of game logic.
