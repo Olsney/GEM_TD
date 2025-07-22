@@ -18,7 +18,10 @@
 A tower defense game built with **ECS architecture** using the **Entitas** framework in Unity.  
 Developed as a team project to demonstrate modular design, performance, and clean separation of game logic.
 
-![image](https://github.com/user-attachments/assets/c76f3d92-cc5c-4be9-ae57-92a1c60c775a)
+<img width="2559" height="1439" alt="image" src="https://github.com/user-attachments/assets/7f8bd150-056e-45be-8083-0c86ed397da7" />
+
+<img width="2557" height="1439" alt="image" src="https://github.com/user-attachments/assets/a5c44ae3-8b2b-4e9c-85b4-36c61ba878b0" />
+
 
 ![image](https://github.com/user-attachments/assets/7babb57e-f46c-4aa0-ac88-1d40fca6727a)
 
