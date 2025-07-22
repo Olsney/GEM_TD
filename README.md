@@ -22,8 +22,10 @@ Developed as a team project to demonstrate modular design, performance, and clea
 
 <img width="2557" height="1439" alt="image" src="https://github.com/user-attachments/assets/a5c44ae3-8b2b-4e9c-85b4-36c61ba878b0" />
 
-
 ![image](https://github.com/user-attachments/assets/7babb57e-f46c-4aa0-ac88-1d40fca6727a)
+
+<img width="2122" height="1191" alt="image" src="https://github.com/user-attachments/assets/1a36024a-d318-470e-b8bf-2b743af7fd8e" />
+
 
 ![image](https://github.com/user-attachments/assets/59353df5-c710-4b4b-bf69-0f38bd477511)
 
