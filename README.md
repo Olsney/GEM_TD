@@ -17,26 +17,17 @@
 A tower defense game built with **ECS architecture** using the **Entitas** framework in Unity.  
 Developed as a team project to demonstrate modular design, performance, and clean separation of game logic.
 
-<img width="2559" height="1439" alt="image" src="https://github.com/user-attachments/assets/7f8bd150-056e-45be-8083-0c86ed397da7" />
-
-<img width="2557" height="1439" alt="image" src="https://github.com/user-attachments/assets/a5c44ae3-8b2b-4e9c-85b4-36c61ba878b0" />
-
-![image](https://github.com/user-attachments/assets/7babb57e-f46c-4aa0-ac88-1d40fca6727a)
-
-<img width="2122" height="1191" alt="image" src="https://github.com/user-attachments/assets/1a36024a-d318-470e-b8bf-2b743af7fd8e" />
+<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/d0e9d66a-18c6-4ddc-9ad4-0b0f94b2d6d8" />
 
 
-![image](https://github.com/user-attachments/assets/59353df5-c710-4b4b-bf69-0f38bd477511)
+![Уточки](https://github.com/user-attachments/assets/50e4a759-7e1d-4740-85ea-da2c1e194487)
 
-![image](https://github.com/user-attachments/assets/e6eaca2e-9b52-4b13-bf1c-7d9879f9bcdd)
+![Boevka](https://github.com/user-attachments/assets/b73db41a-c91d-4512-92a9-30f4a4e193c3)
 
-![image](https://github.com/user-attachments/assets/8546f64b-e21b-403f-b204-592ff4663101)
+<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/4038692c-8701-4723-af32-ef6e3a5d306b" />
 
-![image](https://github.com/user-attachments/assets/b3fd9efb-bd79-4877-b944-0dc6c190d9ba)
+<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/015e49a1-25db-4b0a-9279-147ab2d1ad48" />
 
-![image](https://github.com/user-attachments/assets/2308b316-c5a7-4787-a2f8-b4387f2633dc)
+<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/e3d427a0-f326-4c3f-836e-f281901acb42" />
 
-![image](https://github.com/user-attachments/assets/531aae88-e5a7-49d8-a655-bd0016f3a8db)
-
-![image](https://github.com/user-attachments/assets/02890513-8b64-4a3a-972e-be466d776cc7)
-
+<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/1a36024a-d318-470e-b8bf-2b743af7fd8e" />
