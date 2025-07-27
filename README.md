@@ -10,7 +10,6 @@
   <a href="https://stoneprophet.itch.io/gemtd" target="_blank">
     🕹️ <strong>Play here on itch.io!</strong>
   </a><br>
-  <strong style="color: white;">Password: 1337</strong>
 </p>
 
 # 🏰 GemTD (Unannounced PC game)
