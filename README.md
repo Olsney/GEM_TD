@@ -1,8 +1,8 @@
 <h3 align="center">🎮 YouTube Video</h3>
 
 <p align="center">
-  <a href="https://www.youtube.com/watch?v=-K_qYEh48QA" target="_blank">
-    <img src="https://img.youtube.com/vi/-K_qYEh48QA/maxresdefault.jpg" width="640" alt="Gameplay Preview"/>
+  <a href="https://youtu.be/V91p_w_yB-k" target="_blank">
+    <img src="https://img.youtube.com/vi/V91p_w_yB-k/maxresdefault.jpg" width="640" alt="Gameplay Preview"/>
   </a>
 </p>
 
