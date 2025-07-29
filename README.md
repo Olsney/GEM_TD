@@ -539,17 +539,3 @@ namespace UserInterface.GameplayHeadsUpDisplay
 **🎮 [Играть](https://stoneprophet.itch.io/gemtd) • 📖 [Архитектура](#-архитектура-проекта) • 🔧 [Реализация](#-примеры-реализации-архитектурных-паттернов)**
 
 </div>
-
-
-
-![Уточки](https://github.com/user-attachments/assets/50e4a759-7e1d-4740-85ea-da2c1e194487)
-
-![Boevka](https://github.com/user-attachments/assets/b73db41a-c91d-4512-92a9-30f4a4e193c3)
-
-<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/4038692c-8701-4723-af32-ef6e3a5d306b" />
-
-<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/015e49a1-25db-4b0a-9279-147ab2d1ad48" />
-
-<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/e3d427a0-f326-4c3f-836e-f281901acb42" />
-
-<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/1a36024a-d318-470e-b8bf-2b743af7fd8e" />
