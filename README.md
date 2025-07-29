@@ -1,17 +1,3 @@
-<h3 align="center">🎮 YouTube Video</h3>
-
-<p align="center">
-  <a href="https://youtu.be/V91p_w_yB-k" target="_blank">
-    <img src="https://img.youtube.com/vi/V91p_w_yB-k/maxresdefault.jpg" width="640" alt="Gameplay Preview"/>
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://stoneprophet.itch.io/gemtd" target="_blank">
-    🕹️ <strong>Play here on itch.io!</strong>
-  </a><br>
-</p>
-
 <div align="center">
 
 # 💎 GEMTD
@@ -22,7 +8,7 @@
 [![Entitas](https://img.shields.io/badge/Entitas-ECS-green?style=for-the-badge)](https://github.com/sschmid/Entitas-CSharp)
 [![Zenject](https://img.shields.io/badge/Zenject-DI-orange?style=for-the-badge)](https://github.com/modesttree/Zenject)
 
-### 🎮 [Играть на itch.io](https://stoneprophet.itch.io/gemtd) 
+### 🎮 [Play here on Itch.io](https://stoneprophet.itch.io/gemtd) 
 
 *Исходный код tower defense игры, построенной на Entity Component System (Entitas) с использованием MVP паттерна для UI и Dependency Injection*
 
@@ -39,6 +25,14 @@
 ## 🎬 Демонстрация геймплея
 
 <div align="center">
+
+<h3 align="center">🎮 YouTube Video</h3>
+
+<p align="center">
+  <a href="https://youtu.be/V91p_w_yB-k" target="_blank">
+    <img src="https://img.youtube.com/vi/V91p_w_yB-k/maxresdefault.jpg" width="640" alt="Gameplay Preview"/>
+  </a>
+</p>
 
 ### ⚔️ Боевая система и механика башен
 ![Уточки](https://github.com/user-attachments/assets/50e4a759-7e1d-4740-85ea-da2c1e194487)
